@@ -1,0 +1,390 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Skin Care Log</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Layout: one narrow phone column — summary strip, five big log buttons, entry sheet, recent history */
+:root{
+  --bg:#f3f4f7; --surface:#ffffff; --fg:#1d2230; --muted:#626a7d; --line:#dfe2ea;
+  --accent:#2c6e73;
+  --taci:#2c6e73; --steroid:#b26a12; --anti:#6a4fb3; --flare:#c2413b; --note:#5d6677;
+  --tint-taci:#e3f0f0; --tint-steroid:#f8ecdb; --tint-anti:#ece7f7; --tint-flare:#f8e3e2; --tint-note:#e9ebf0;
+  --c-arms:#e6194b; --c-legs:#2fa84a; --c-stomach:#f2a900; --c-back:#4363d8; --c-neck:#e02bd6; --c-face:#00a9c4; --c-diaper:#ff6f00; --good:#2e8b57;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", system-ui, -apple-system, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#13161d; --surface:#1c2029; --fg:#e8eaf0; --muted:#9aa1b2; --line:#2c313d;
+  --accent:#6fc0c4;
+  --taci:#6fc0c4; --steroid:#e6a44f; --anti:#a993e8; --flare:#ee7b74; --note:#a3aab9;
+  --tint-taci:#1c3233; --tint-steroid:#3a2c19; --tint-anti:#2a2440; --tint-flare:#3d2221; --tint-note:#262a34;
+  color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#13161d; --surface:#1c2029; --fg:#e8eaf0; --muted:#9aa1b2; --line:#2c313d;
+  --accent:#6fc0c4;
+  --taci:#6fc0c4; --steroid:#e6a44f; --anti:#a993e8; --flare:#ee7b74; --note:#a3aab9;
+  --tint-taci:#1c3233; --tint-steroid:#3a2c19; --tint-anti:#2a2440; --tint-flare:#3d2221; --tint-note:#262a34;
+  color-scheme:dark;}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+h1{font-family:var(--display);font-size:28px;font-weight:700;margin:0;letter-spacing:-.01em;text-wrap:balance}
+.sub{color:var(--muted);margin:2px 0 0;font-size:14px}
+.label{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700;margin:0 0 8px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;min-width:0}
+.stat b{display:block;font-family:var(--display);font-size:26px;font-variant-numeric:tabular-nums;line-height:1.1}
+.stat span{font-size:12.5px;color:var(--muted)}
+.stats{grid-template-columns:repeat(auto-fit,minmax(96px,1fr))}
+.stat b{color:var(--cl)}
+.lastline{font-size:14px;color:var(--muted);margin:8px 0 0}
+.lastline strong{color:var(--fg)}
+.buttons{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{font:inherit;font-weight:700;font-size:17px;border:0;border-radius:14px;padding:18px 14px;text-align:left;cursor:pointer;
+  display:flex;flex-direction:column;gap:2px;color:var(--fg);min-height:76px}
+.btn small{font-weight:400;font-size:13px;color:var(--muted)}
+.btn:focus-visible,.chip:focus-visible,.save:focus-visible,.ghost:focus-visible,.del:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.btn{background:color-mix(in srgb,var(--c) 13%,var(--surface));box-shadow:inset 4px 0 0 var(--cl)}
+.btn.wide{grid-column:1 / -1;min-height:56px}
+.tinted{--cl:var(--c)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .tinted{--cl:color-mix(in srgb,var(--c) 62%,#fff)}}
+:root[data-theme="dark"] .tinted{--cl:color-mix(in srgb,var(--c) 62%,#fff)}
+.sheet{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:14px}
+.sheet h2{font-family:var(--display);font-size:21px;margin:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:inherit;font-size:15px;padding:9px 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--bg);color:var(--fg);cursor:pointer}
+.chip[aria-pressed="true"]{border-color:var(--cur);background:color-mix(in srgb,var(--cur) 14%,var(--surface));font-weight:700}
+input[type=text],input[type=date],input[type=datetime-local],textarea{font:inherit;font-size:16px;width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--fg)}
+textarea{min-height:64px;resize:vertical}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.save{font:inherit;font-weight:700;font-size:17px;flex:1;min-width:140px;padding:14px;border-radius:12px;border:0;background:var(--cur);color:#fff;cursor:pointer}
+.ghost{font:inherit;font-size:16px;padding:14px 18px;border-radius:12px;border:1.5px solid var(--line);background:transparent;color:var(--fg);cursor:pointer}
+.err{color:var(--flare);font-size:14px;margin:0}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--fg);color:var(--bg);padding:10px 18px;border-radius:999px;font-weight:700;font-size:15px;z-index:20}
+.list{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.day{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700;padding:12px 14px 4px}
+.entry{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:start;padding:10px 14px;border-top:1px solid var(--line)}
+.day + .entry{border-top:0}
+.dot{width:10px;height:10px;border-radius:50%;margin-top:6px}
+.entry .main{min-width:0}
+.entry .what{font-weight:700}
+.entry .meta{color:var(--muted);font-size:14px;overflow-wrap:anywhere}
+.entry time{font-variant-numeric:tabular-nums;color:var(--muted);font-size:14px;white-space:nowrap}
+.del{font:inherit;font-size:13px;border:0;background:transparent;color:var(--muted);cursor:pointer;padding:2px 0;text-decoration:underline}
+.del.confirm{color:var(--flare);font-weight:700}
+.empty{padding:22px 16px;color:var(--muted);text-align:center}
+.chartbox{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 12px 8px}
+.chartbox svg{display:block;width:100%;height:auto}
+.chartbox .ax{fill:var(--muted);font:11px var(--body);font-variant-numeric:tabular-nums}
+.chartbox .grid{stroke:var(--line);stroke-width:1}
+.mgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+@media (min-width:460px){.mgrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.mini{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 8px 4px;min-width:0}
+.mini header{display:flex;justify-content:space-between;align-items:baseline;gap:6px}
+.mini b{font-family:var(--display);font-size:15px}
+.mini .tag{font-size:12px;font-weight:700;white-space:nowrap}
+.mini .tag.up{color:var(--flare)} .mini .tag.down{color:var(--good)} .mini .tag.flat{color:var(--muted)}
+.mini svg{display:block;width:100%;height:auto}
+.mini .ax{fill:var(--muted);font:10px var(--body)}
+.mini .val{font:700 11px var(--body)}
+.mkey{font-size:12.5px;color:var(--muted);padding:8px 10px;display:flex;flex-direction:column;gap:6px;justify-content:center}
+.mkey i{display:inline-block;width:18px;vertical-align:middle;margin-right:6px;border-top:3px solid var(--fg)}
+.mkey i.dash{border-top:2px dashed var(--muted)}
+.note{font-size:12.5px;color:var(--muted);margin:6px 2px 0}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted);padding:6px 4px 2px}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:6px}
+@media (prefers-reduced-motion:no-preference){.btn{transition:transform .08s}.btn:active{transform:scale(.98)}}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Skin care log</h1>
+    <p class="sub">Tap what you just did. Patchwork reads this log.</p>
+  </header>
+
+  <section aria-labelledby="mlabel">
+    <p class="label" id="mlabel">This month · days used</p>
+    <div class="stats" id="stats"></div>
+    <p class="lastline" id="lastLine"></p>
+  </section>
+
+  <section aria-label="Log an entry">
+    <div class="buttons" id="buttons"></div>
+  </section>
+
+  <form class="sheet" id="sheet" hidden>
+    <h2 id="sheetTitle"></h2>
+    <div id="areaBlock">
+      <p class="label">Where</p>
+      <div class="chips" id="chips"></div>
+      <input type="text" id="otherArea" placeholder="Other area" hidden>
+    </div>
+    <div id="slotBlock">
+      <p class="label">Morning or night</p>
+      <div class="chips" id="slots"></div>
+    </div>
+    <div id="allergenBlock">
+      <p class="label">Allergen</p>
+      <div class="chips" id="allergenChips"></div>
+      <input type="text" id="otherAllergen" placeholder="Other allergen" hidden>
+      <p class="label" style="margin-top:12px"><label for="amount">Amount</label></p>
+      <input type="text" id="amount" placeholder="e.g. 1/12 egg, one bite, skin contact">
+    </div>
+    <div>
+      <p class="label"><label for="when" id="whenLabel">When</label></p>
+      <input type="datetime-local" id="when">
+    </div>
+    <div>
+      <p class="label"><label for="note">Note (optional)</label></p>
+      <textarea id="note" placeholder="e.g. ate tomato at lunch, new bath soap"></textarea>
+    </div>
+    <p class="err" id="err" hidden></p>
+    <div class="row">
+      <button class="save" id="save" type="submit">Save</button>
+      <button class="ghost" id="cancel" type="button">Cancel</button>
+    </div>
+  </form>
+
+  <section aria-labelledby="tlabel">
+    <p class="label" id="tlabel">Per week · last 10 weeks</p>
+    <div class="chartbox">
+      <svg id="chart" viewBox="0 0 340 170" role="img" aria-label="Weekly use of each treatment"></svg>
+      <div class="legend" id="legend"></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="alabel" id="areaSection">
+    <p class="label" id="alabel"></p>
+    <div class="mgrid" id="mgrid"></div>
+    <p class="note" id="areaNote"></p>
+  </section>
+
+  <section aria-labelledby="rlabel">
+    <p class="label" id="rlabel">Recent</p>
+    <div class="list" id="list"><div class="empty" id="emptyMsg">Loading the log…</div></div>
+  </section>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+// Built from a profile by `python -m patchwork page`. Edit the profile, not this line.
+const PROFILE=/*PROFILE*/{"areas":{"tracked":["Arms","Legs","Stomach","Back","Neck","Face","Diaper"],"full_body":{"names":["entire body","full body","body"],"covers":["Arms","Legs","Stomach","Back","Neck"]},"aliases":{"ankle":"Legs","ankles":"Legs","foot":"Legs","feet":"Legs","knee":"Legs","knees":"Legs","thigh":"Legs","thighs":"Legs","shin":"Legs","shins":"Legs","elbow":"Arms","elbows":"Arms","hand":"Arms","hands":"Arms","wrist":"Arms","wrists":"Arms","thumb":"Arms","thumbs":"Arms","finger":"Arms","fingers":"Arms","shoulder":"Arms","shoulders":"Arms","side":"Back"},"colors":{"Arms":"#e6194b","Legs":"#3cb44b","Stomach":"#ffb000","Back":"#4363d8","Neck":"#f032e6","Face":"#00b8d4","Diaper":"#ff6f00"}},"creams":[{"id":"steroid","name":"Steroid","schedule":"daily","areas":"any","limits":{"max_days_per_area_per_week":2,"max_days_per_week":null},"color":"#b26a12"},{"id":"taci","name":"Face cream","schedule":"morning_night","areas":["Face"],"limits":{"max_days_per_area_per_week":null,"max_days_per_week":null},"color":"#2c6e73"}],"antihistamine":{"enabled":true,"brand":"Antihistamine","limit":{"max_doses":1,"window_days":3},"color":"#6a4fb3"},"allergens":{"track":true,"list":["Milk","Egg","Fish","Shellfish","Tree nuts","Peanut","Wheat","Soy","Sesame"]},"averages":{"rolling_weeks":12}}/*END_PROFILE*/;
+const safeColor=c=>/^#[0-9a-fA-F]{3,8}$/.test(c||"")?c:"#5d6677";
+let AREAS,FULL,FULL_NAMES,ALIASES,AREA_COLORS,CREAMS,AREA_CREAM,AH,AL,ROLL,TYPES;
+
+// Everything family-specific comes from the profile. The live log keeps it in its own
+// database (config/profile); the embedded PROFILE is the fallback and the demo setup.
+function applyProfile(P){
+  AREAS=P.areas.tracked;FULL=P.areas.full_body.covers;FULL_NAMES=P.areas.full_body.names;
+  ALIASES=P.areas.aliases||{};AREA_COLORS={};Object.entries(P.areas.colors||{}).forEach(([k,v])=>AREA_COLORS[k]=safeColor(v));
+  CREAMS=P.creams.map(c=>Object.assign({},c,{color:safeColor(c.color),allowed:c.areas==="any"?AREAS:c.areas,multi:c.areas==="any"||c.areas.length>1}));
+  AREA_CREAM=CREAMS.find(c=>c.multi)||null;
+  AH=P.antihistamine||{enabled:false};AL=P.allergens||{track:false,list:[]};
+  ROLL=(P.averages||{}).rolling_weeks||12;
+  // Entry types and how each is logged
+  TYPES={};
+  CREAMS.forEach(c=>{TYPES[c.id]={kind:"cream",name:c.name,color:c.color,areas:true,
+    areaList:c.areas==="any"?AREAS.concat(["Entire body","Other"]):c.allowed,
+    preset:c.allowed.length===1?[c.allowed[0]]:[],needArea:true,dateOnly:true,slots:c.schedule==="morning_night",
+    hint:c.allowed.length===1?"on "+c.allowed[0].toLowerCase():c.areas==="any"?"on a patch":"on "+c.allowed.join(", ").toLowerCase()}});
+  if(AH.enabled)TYPES.anti={kind:"anti",name:AH.brand,color:safeColor(AH.color||"#6a4fb3"),hint:"dose given"};
+  TYPES.flare={kind:"flare",name:"Flare",color:"#c2413b",areas:true,areaList:AREAS.concat(["Entire body","Other"]),needArea:true,hint:"new or worse patch"};
+  if(AL.track)TYPES.allergen={kind:"allergen",name:"Allergen",color:"#8a6d1f",hint:"exposure"};
+  TYPES.note={kind:"note",name:"Note",color:"#5d6677",hint:"food, soap, sleep…",wide:true};
+  buildButtons();
+}
+function validProfile(P){return P&&P.areas&&Array.isArray(P.areas.tracked)&&P.areas.full_body&&Array.isArray(P.areas.full_body.covers)&&Array.isArray(P.creams)&&P.creams.length>0}
+
+function groupArea(a){const k=String(a).trim().toLowerCase();if(FULL_NAMES.includes(k))return FULL;
+  const c=AREAS.find(x=>x.toLowerCase()===k);if(c)return[c];return ALIASES[k]?[ALIASES[k]]:[];}
+function creamAreas(e,c){const cats=new Set();(e.areas||[]).forEach(a=>groupArea(a).forEach(x=>cats.add(x)));
+  if(!(e.areas||[]).length&&c.allowed.length===1)cats.add(c.allowed[0]);return [...cats].filter(a=>c.allowed.includes(a));}
+// Applications across areas / number of areas treated (see DECISIONS.md)
+function avgPerTreatedArea(evs,c){const per={};evs.forEach(e=>creamAreas(e,c).forEach(a=>{(per[a]=per[a]||new Set()).add(e.day)}));
+  const n=Object.keys(per).length;if(!n)return 0;let tot=0;Object.values(per).forEach(s=>tot+=s.size);return Math.round(tot/n*10)/10;}
+
+const $=id=>document.getElementById(id);
+let db=null, entries=[], cur=null, picked=new Set(), slot="", allergen="", pendingDel=null, saving=false, demo=false;
+
+function pad(n){return String(n).padStart(2,"0")}
+function localInput(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())+"T"+pad(d.getHours())+":"+pad(d.getMinutes())}
+function dayKey(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())}
+function toast(msg){const t=$("toast");t.textContent=msg;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>t.hidden=true,2200)}
+function chip(label,on,click){const b=document.createElement("button");b.type="button";b.className="chip";b.textContent=label;
+  b.setAttribute("aria-pressed",on?"true":"false");b.onclick=click;return b}
+
+// Buttons
+function buildButtons(){const box=$("buttons");box.innerHTML="";Object.entries(TYPES).forEach(([id,T])=>{
+  const b=document.createElement("button");b.type="button";b.className="btn tinted"+(T.wide?" wide":"");b.dataset.t=id;
+  b.style.setProperty("--c",T.color);b.textContent=T.name;const s=document.createElement("small");s.textContent=T.hint;b.appendChild(s);
+  b.onclick=()=>openSheet(id);box.appendChild(b)});
+ if(Object.keys(TYPES).length%2===0){const n=box.querySelector('[data-t="note"]');if(n)n.classList.remove("wide")}}
+
+function renderChips(){
+  const T=TYPES[cur],c=$("chips");c.innerHTML="";
+  (T.areaList||[]).forEach(a=>c.appendChild(chip(a,picked.has(a),()=>{picked.has(a)?picked.delete(a):picked.add(a);renderChips()})));
+  $("otherArea").hidden=!picked.has("Other");
+  const s=$("slots");s.innerHTML="";["Morning","Night"].forEach(x=>s.appendChild(chip(x,slot===x.toLowerCase(),()=>{slot=x.toLowerCase();renderChips()})));
+  const al=$("allergenChips");al.innerHTML="";(AL.list||[]).concat(["Other"]).forEach(x=>al.appendChild(chip(x,allergen===x,()=>{allergen=x;renderChips()})));
+  $("otherAllergen").hidden=allergen!=="Other";
+}
+function openSheet(t){
+  cur=t;const T=TYPES[t];picked=new Set(T.preset||[]);allergen="";slot=T.slots?(new Date().getHours()<14?"morning":"night"):"";
+  const s=$("sheet");s.style.setProperty("--cur",T.color);
+  $("sheetTitle").textContent=T.name;$("areaBlock").hidden=!T.areas;$("slotBlock").hidden=!T.slots;$("allergenBlock").hidden=T.kind!=="allergen";
+  const w=$("when");w.type=T.dateOnly?"date":"datetime-local";w.value=T.dateOnly?dayKey(new Date()):localInput(new Date());
+  $("whenLabel").textContent=T.dateOnly?"Date":"When";$("note").value="";$("otherArea").value="";$("otherAllergen").value="";$("amount").value="";$("err").hidden=true;
+  renderChips();s.hidden=false;s.scrollIntoView({block:"nearest",behavior:"smooth"});
+}
+$("cancel").onclick=()=>{$("sheet").hidden=true;cur=null};
+
+$("sheet").addEventListener("submit",async e=>{
+  e.preventDefault(); if(!cur||saving) return;
+  const T=TYPES[cur];const err=$("err");err.hidden=true;const fail=m=>{err.textContent=m;err.hidden=false};
+  if(!db)return fail(demo?"This is a demo with sample data. Open your own log to save entries.":"The log isn't connected right now. Reload the page and try again.");
+  let areas=T.areas?[...picked].filter(a=>a!=="Other"):[];
+  const other=$("otherArea").value.trim();if(T.areas&&picked.has("Other")&&other)areas.push(other);
+  if(T.needArea&&!areas.length)return fail("Pick at least one area.");
+  if(T.slots&&!slot)return fail("Pick morning or night.");
+  let alName="";if(T.kind==="allergen"){alName=allergen==="Other"?$("otherAllergen").value.trim():allergen;if(!alName)return fail("Pick the allergen.");}
+  const v=$("when").value;let d;
+  if(T.dateOnly){const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(v);const n=new Date();d=m?new Date(+m[1],+m[2]-1,+m[3],12):new Date(n.getFullYear(),n.getMonth(),n.getDate(),12);}
+  else d=v?new Date(v):new Date();
+  if(isNaN(d))return fail("That date doesn't look right. Pick it again.");
+  const note=$("note").value.trim();
+  if(T.kind==="note"&&!note)return fail("Write the note first.");
+  saving=true;$("save").textContent="Saving…";
+  try{
+    const rec={type:cur,areas,note,at:d.toISOString(),atMs:d.getTime(),day:dayKey(d)};
+    if(T.dateOnly)rec.dateOnly=true;
+    if(T.slots)rec.slot=slot;
+    if(T.kind==="allergen"){rec.allergen=alName;rec.amount=$("amount").value.trim();}
+    await db.collection("entries").add(rec);
+    $("sheet").hidden=true;toast(T.name+" logged");cur=null;
+  }catch(x){fail(x&&x.code==="quota_exceeded"?"The log is full. Ask Helper to archive older entries.":"Couldn't save. Check your connection and tap Save again.");}
+  finally{saving=false;$("save").textContent="Save"}
+});
+
+function weekStarts(n){const now=new Date();const mon=new Date(now.getFullYear(),now.getMonth(),now.getDate());mon.setDate(mon.getDate()-((mon.getDay()+6)%7));
+  const out=[];for(let i=n-1;i>=0;i--){const s=new Date(mon);s.setDate(s.getDate()-7*i);out.push(s)}return out}
+function weekKey(day){const p=day.split("-").map(Number);const d=new Date(p[0],p[1]-1,p[2]);d.setDate(d.getDate()-((d.getDay()+6)%7));return dayKey(d)}
+
+function drawChart(){
+  const svg=$("chart");const W=340,H=170,L=26,R=22,T=10,B=24,N=10;
+  const weeks=weekStarts(N);const idx={};weeks.forEach((w,i)=>idx[dayKey(w)]=i);
+  const series=[];
+  CREAMS.forEach(c=>{const by=weeks.map(()=>[]);entries.forEach(e=>{if(e.type===c.id&&e.day){const i=idx[weekKey(e.day)];if(i!==undefined)by[i].push(e)}});
+    series.push({name:c.name+(c.multi?" (avg per area)":""),color:c.color,vals:c.multi?by.map(ev=>avgPerTreatedArea(ev,c)):by.map(ev=>new Set(ev.map(e=>e.day)).size)})});
+  if(AH.enabled){const by=weeks.map(()=>new Set());entries.forEach(e=>{if(e.type==="anti"&&e.day){const i=idx[weekKey(e.day)];if(i!==undefined)by[i].add(e.day)}});
+    series.push({name:AH.brand+" days",color:safeColor(AH.color||"#6a4fb3"),vals:by.map(s=>s.size)})}
+  const x=i=>L+i*(W-L-R)/(N-1), y=v=>T+(H-T-B)*(1-v/7);
+  let s="";[0,2,4,6].forEach(v=>{s+='<line class="grid" x1="'+L+'" x2="'+(W-R)+'" y1="'+y(v)+'" y2="'+y(v)+'"/><text class="ax" x="'+(L-6)+'" y="'+(y(v)+4)+'" text-anchor="end">'+v+'</text>'});
+  weeks.forEach((w,i)=>{if(i%3===0||i===N-1)s+='<text class="ax" x="'+x(i)+'" y="'+(H-6)+'" text-anchor="'+(i===N-1?"end":i===0?"start":"middle")+'">'+w.toLocaleDateString(undefined,{month:"short",day:"numeric"})+'</text>'});
+  series.forEach((se,k)=>{s+='<g class="tinted" style="--c:'+se.color+'"><polyline fill="none" stroke="var(--cl)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" points="'+se.vals.map((v,i)=>x(i)+","+y(v)).join(" ")+'"/><circle cx="'+x(N-1)+'" cy="'+y(se.vals[N-1])+'" r="3.5" fill="var(--cl)"/></g>'});
+  svg.innerHTML=s;
+  $("legend").innerHTML="";series.forEach(se=>{const sp=document.createElement("span");sp.className="tinted";sp.style.setProperty("--c",se.color);
+    const i=document.createElement("i");i.style.background="var(--cl)";sp.append(i,se.name);$("legend").appendChild(sp)});
+}
+
+function drawAreas(){
+  if(!AREA_CREAM){$("areaSection").hidden=true;return}
+  const c=AREA_CREAM;$("alabel").textContent=c.name+" by body area · last 4 weeks";
+  $("areaNote").textContent="Full body counts toward "+FULL.join(", ").toLowerCase()+"."+(AREAS.filter(a=>!FULL.includes(a)).length?" "+AREAS.filter(a=>!FULL.includes(a)).join(" and ")+" are tracked separately.":"");
+  const g=$("mgrid");const N=4;const today=new Date();today.setHours(12,0,0,0);
+  const dnum=k=>{const p=k.split("-").map(Number);return Math.round(new Date(p[0],p[1]-1,p[2],12)/864e5)};
+  const t=dnum(dayKey(today));
+  const per={};c.allowed.forEach(a=>per[a]=new Set());
+  entries.forEach(e=>{if(e.type!==c.id||!e.day)return;creamAreas(e,c).forEach(a=>per[a].add(e.day))});
+  const all=entries.filter(e=>e.type===c.id&&e.day).map(e=>dnum(e.day));
+  const first=all.length?Math.min(...all):t;const aStart=Math.max(first,t-(7*ROLL-1));const aWeeks=Math.max(1,(t-aStart+1)/7);
+  const starts=[];for(let i=N-1;i>=0;i--)starts.push(t-7*i-6);
+  const lab=n=>new Date(n*864e5).toLocaleDateString(undefined,{month:"short",day:"numeric",timeZone:"UTC"});
+  let html="";
+  c.allowed.forEach(a=>{
+    const ds=[...per[a]].map(dnum);const v=starts.map(s=>ds.filter(d=>d>=s&&d<=s+6).length);
+    const avg=ds.filter(d=>d>=aStart&&d<=t).length/aWeeks;
+    const diff=v[N-1]-v[N-2];const cls=diff>0?"up":diff<0?"down":"flat";const tag=diff>0?"▲ rising":diff<0?"▼ falling":"— steady";
+    const W=170,H=96,L=6,R=30,T=16,B=18,ymax=Math.max(4,...v);
+    const x=i=>L+8+i*(W-L-R-16)/(N-1),y=val=>T+(H-T-B)*(1-val/ymax);
+    let s='<line x1="'+L+'" x2="'+(W-R+4)+'" y1="'+y(0)+'" y2="'+y(0)+'" stroke="var(--line)"/>';
+    s+='<line x1="'+L+'" x2="'+(W-R+4)+'" y1="'+y(avg)+'" y2="'+y(avg)+'" stroke="var(--muted)" stroke-width="1.4" stroke-dasharray="4 3"/>';
+    s+='<text class="ax" x="'+(W-R+7)+'" y="'+(y(avg)+3)+'">'+avg.toFixed(1)+'</text>';
+    s+='<polyline fill="none" stroke="var(--cl)" stroke-width="2.6" stroke-linejoin="round" points="'+v.map((val,i)=>x(i)+","+y(val)).join(" ")+'"/>';
+    v.forEach((val,i)=>{s+='<circle cx="'+x(i)+'" cy="'+y(val)+'" r="3.4" fill="var(--cl)"/><text class="val" fill="var(--cl)" x="'+x(i)+'" y="'+(y(val)-6)+'" text-anchor="middle">'+val+'</text>'});
+    starts.forEach((st,i)=>{if(i===0||i===N-1)s+='<text class="ax" x="'+x(i)+'" y="'+(H-4)+'" text-anchor="'+(i===0?"start":"end")+'">'+lab(st)+'</text>'});
+    const col=AREA_COLORS[a]||"#555";
+    html+='<div class="mini tinted" style="--c:'+col+'"><header><b></b><span class="tag '+cls+'">'+tag+'</span></header><svg viewBox="0 0 '+W+' '+H+'" role="img">'+s+'</svg></div>';
+  });
+  html+='<div class="mini mkey"><span><i></i>days / week</span><span><i class="dash"></i>'+ROLL+'-week avg</span><span>▲▼ this week vs last</span></div>';
+  g.innerHTML=html;
+  // area names set as text to keep user-entered names out of the HTML string
+  g.querySelectorAll(".mini:not(.mkey) header b").forEach((b,i)=>b.textContent=c.allowed[i]);
+  g.querySelectorAll(".mini:not(.mkey) svg").forEach((sv,i)=>sv.setAttribute("aria-label",c.allowed[i]+" "+c.name+" days per week"));
+}
+
+function render(){
+  drawChart();drawAreas();
+  const now=new Date();const ym=now.getFullYear()+"-"+pad(now.getMonth()+1);
+  const days=t=>new Set(entries.filter(e=>e.type===t&&(e.day||"").startsWith(ym)).map(e=>e.day)).size;
+  const st=$("stats");st.innerHTML="";
+  CREAMS.map(c=>[c.id,c.name,c.color]).concat(AH.enabled?[["anti",AH.brand,safeColor(AH.color||"#6a4fb3")]]:[]).forEach(([id,name,color])=>{
+    const d=document.createElement("div");d.className="stat tinted";d.style.setProperty("--c",color);
+    const b=document.createElement("b");b.textContent=days(id);const sp=document.createElement("span");sp.textContent=name;d.append(b,sp);st.appendChild(d)});
+  const L=$("lastLine");L.textContent="";
+  if(AREA_CREAM){const ls=entries.find(e=>e.type===AREA_CREAM.id);
+    if(ls){const d=new Date(ls.atMs);const ago=Math.round((new Date(dayKey(now))-new Date(dayKey(d)))/864e5);
+      L.append("Last "+AREA_CREAM.name.toLowerCase()+": ");const s=document.createElement("strong");s.textContent=ago===0?"today":ago===1?"yesterday":ago+" days ago";
+      L.append(s," · "+(ls.areas||[]).join(", ")+(ls.slot?" · "+ls.slot:""));}
+    else L.textContent="Last "+AREA_CREAM.name.toLowerCase()+": none logged yet";}
+
+  const list=$("list");list.innerHTML="";
+  if(!entries.length){const e=document.createElement("div");e.className="empty";e.textContent="No entries yet. Tap a button above to log the first one.";list.appendChild(e);return}
+  let lastDay=null;
+  entries.slice(0,60).forEach(e=>{
+    const d=new Date(e.atMs);const k=dayKey(d);
+    if(k!==lastDay){lastDay=k;const h=document.createElement("div");h.className="day";h.textContent=d.toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"});list.appendChild(h)}
+    const T=TYPES[e.type]||{name:e.type,color:"#5d6677"};
+    const row=document.createElement("div");row.className="entry";
+    const dot=document.createElement("span");dot.className="dot tinted";dot.style.setProperty("--c",T.color);dot.style.background="var(--cl)";
+    const main=document.createElement("div");main.className="main";
+    const w=document.createElement("div");w.className="what";w.textContent=T.name+(e.slot?" · "+e.slot[0].toUpperCase()+e.slot.slice(1):"");main.appendChild(w);
+    const metaTxt=[e.allergen?(e.allergen+(e.amount?", "+e.amount:"")):"",(e.areas||[]).join(", "),e.note].filter(Boolean).join(" — ");
+    if(metaTxt){const m=document.createElement("div");m.className="meta";m.textContent=metaTxt;main.appendChild(m)}
+    const side=document.createElement("div");side.style.textAlign="right";
+    const tm=document.createElement("time");tm.dateTime=e.at||"";tm.textContent=e.dateOnly?"":d.toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit"});
+    side.append(tm);
+    if(db){const del=document.createElement("button");del.type="button";del.className="del"+(pendingDel===e.id?" confirm":"");
+      del.textContent=pendingDel===e.id?"Tap to delete":"Remove";
+      del.onclick=async()=>{
+        if(pendingDel!==e.id){pendingDel=e.id;render();setTimeout(()=>{if(pendingDel===e.id){pendingDel=null;render()}},4000);return}
+        pendingDel=null;try{await db.collection("entries").doc(e.id).delete();toast("Removed")}catch(x){toast("Couldn't remove. Try again.")}};
+      side.append(document.createElement("br"),del);}
+    row.append(dot,main,side);list.appendChild(row);
+  });
+}
+
+applyProfile(PROFILE);
+(async()=>{
+  try{db=await claude.use("db")}catch(x){db=null}
+  if(db){try{const snap=await db.doc("config/profile").get();if(snap.exists&&validProfile(snap.data()))applyProfile(snap.data())}catch(x){}}
+  if(!db){
+    // Demo mode: outside claude.ai there is no database, so show the synthetic sample, read-only.
+    try{
+      const r=await fetch("../data/sample_entries.json");
+      if(!r.ok)throw 0;
+      entries=(await r.json()).map((e,i)=>Object.assign({id:"demo-"+i,atMs:Date.parse(e.at||e.day+"T12:00:00")},e)).sort((a,b)=>b.atMs-a.atMs);
+      demo=true;document.querySelector(".sub").textContent="Demo mode: synthetic data, read-only.";
+      render();
+    }catch(x){$("emptyMsg").textContent="Open this page as a Claude artifact to log entries, or serve the repo locally to see the demo.";}
+    return;
+  }
+  db.collection("entries").orderBy("atMs","desc").limit(400).onSnapshot(s=>{
+    entries=s.docs.map(d=>Object.assign({id:d.id},d.data()));render();
+  },()=>{$("list").innerHTML='<div class="empty">The log stopped updating. Reload the page.</div>'});
+})();
+</script>

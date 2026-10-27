@@ -1,0 +1,62 @@
+{
+  "_comment": "Default profile and schema reference. Your own setup lives in private/profile.json (created by the first-use questionnaire) and replaces this file at run time. Limits are alert thresholds you set from your doctor's instructions; Patchwork does not recommend any.",
+
+  "version": 2,
+
+  "areas": {
+    "tracked": ["Arms", "Legs", "Stomach", "Back", "Neck", "Face", "Diaper"],
+    "full_body": {
+      "names": ["entire body", "full body", "body"],
+      "covers": ["Arms", "Legs", "Stomach", "Back", "Neck"]
+    },
+    "aliases": {
+      "ankle": "Legs", "ankles": "Legs", "foot": "Legs", "feet": "Legs",
+      "knee": "Legs", "knees": "Legs", "thigh": "Legs", "thighs": "Legs",
+      "shin": "Legs", "shins": "Legs",
+      "elbow": "Arms", "elbows": "Arms", "hand": "Arms", "hands": "Arms",
+      "wrist": "Arms", "wrists": "Arms", "thumb": "Arms", "thumbs": "Arms",
+      "finger": "Arms", "fingers": "Arms", "shoulder": "Arms", "shoulders": "Arms",
+      "side": "Back"
+    },
+    "colors": {
+      "Arms": "#e6194b", "Legs": "#3cb44b", "Stomach": "#ffb000", "Back": "#4363d8",
+      "Neck": "#f032e6", "Face": "#00b8d4", "Diaper": "#ff6f00"
+    }
+  },
+
+  "creams": [
+    {
+      "id": "steroid",
+      "name": "Steroid",
+      "schedule": "daily",
+      "areas": "any",
+      "limits": {"max_days_per_area_per_week": 2, "max_days_per_week": null},
+      "color": "#b26a12"
+    },
+    {
+      "id": "taci",
+      "name": "Face cream",
+      "schedule": "morning_night",
+      "areas": ["Face"],
+      "limits": {"max_days_per_area_per_week": null, "max_days_per_week": null},
+      "color": "#2c6e73"
+    }
+  ],
+
+  "antihistamine": {
+    "enabled": true,
+    "brand": "Antihistamine",
+    "limit": {"max_doses": 1, "window_days": 3},
+    "color": "#6a4fb3"
+  },
+
+  "allergens": {
+    "track": true,
+    "list": ["Milk", "Egg", "Fish", "Shellfish", "Tree nuts", "Peanut", "Wheat", "Soy", "Sesame"]
+  },
+
+  "trends": {"min_change_per_week": 1.5, "baseline_weeks": 3},
+  "averages": {"rolling_weeks": 12},
+
+  "delivery": {"email": "", "log_url": "", "timezone": "America/New_York", "report_day": "Sunday", "report_time": "20:00"}
+}

@@ -1,0 +1,18 @@
+# Real data and personal config never leave your machine
+private/
+
+# Generated output
+out/
+*.png
+!docs/*.png
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+*.egg-info/
+
+# OS
+.DS_Store
