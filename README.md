@@ -7,9 +7,25 @@ Patchwork is a small, real system I run for my own family, built so any family c
 This repo is the production code, published with synthetic data. No real health data lives here.
 
 <p align="center">
-  <img src="docs/log-page.png" alt="The phone log page" width="300">
-  <img src="docs/chart-areas.png" alt="Steroid by body area, small multiples" width="520">
+  <img src="docs/phone-home.png" alt="Patchwork on a phone: monthly counts and one-tap buttons" width="200">
+  <img src="docs/phone-allergen.png" alt="Logging an allergen exposure: allergen, amount, time" width="200">
+  <img src="docs/phone-charts.png" alt="Weekly overview and body-area charts on the phone" width="200">
+  <img src="docs/phone-areas.png" alt="Steroid by body area against each area's 12-week average" width="200">
 </p>
+
+<p align="center">
+  <img src="docs/weekly-email.png" alt="The Sunday report email" width="520"><br>
+  <em>The log page in a phone browser, and the Sunday report as it lands in the inbox.<br>All screenshots use a synthetic log for a fictional toddler.</em>
+</p>
+
+<details>
+<summary>Page screenshots without the phone frame</summary>
+<p align="center">
+  <img src="docs/log-page.png" alt="The log page" width="250">
+  <img src="docs/log-entry.png" alt="Logging a steroid application" width="250">
+  <img src="docs/log-areas.png" alt="Steroid by body area" width="250">
+</p>
+</details>
 
 ---
 
@@ -119,10 +135,10 @@ python -m patchwork init
 python -m patchwork sample --out data/sample_entries.json
 
 # Weekly report: writes report.txt / report.html / two PNG charts to out/
-python -m patchwork weekly --entries data/sample_entries.json --today 2026-10-25 --out out
+python -m patchwork weekly --entries data/sample_entries.json --today 2025-05-18 --out out
 
 # Nightly check: prints alerts as JSON (empty on a quiet night)
-python -m patchwork nightly --entries data/sample_entries.json --today 2026-10-25
+python -m patchwork nightly --entries data/sample_entries.json --today 2025-05-18
 
 # The phone page in demo mode
 python -m http.server 8000   # then open http://localhost:8000/web/

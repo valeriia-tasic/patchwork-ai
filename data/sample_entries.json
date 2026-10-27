@@ -1,53 +1,39 @@
 [
  {
-  "type": "steroid",
-  "day": "2026-08-03",
-  "areas": [
-   "Arms"
-  ],
-  "dateOnly": true,
+  "type": "anti",
+  "day": "2025-02-25",
+  "at": "2025-02-25T19:30:00",
+  "areas": [],
   "note": ""
  },
  {
-  "type": "taci",
-  "day": "2026-08-03",
-  "areas": [
-   "Face"
-  ],
-  "dateOnly": true,
-  "note": "",
-  "slot": "night"
- },
- {
   "type": "anti",
-  "day": "2026-08-03",
-  "at": "2026-08-03T19:30:00",
+  "day": "2025-02-26",
+  "at": "2025-02-26T19:30:00",
   "areas": [],
   "note": ""
  },
  {
   "type": "steroid",
-  "day": "2026-08-04",
+  "day": "2025-02-27",
   "areas": [
-   "Legs",
-   "shoulders"
+   "Neck"
+  ],
+  "dateOnly": true,
+  "note": ""
+ },
+ {
+  "type": "steroid",
+  "day": "2025-02-28",
+  "areas": [
+   "Entire body"
   ],
   "dateOnly": true,
   "note": ""
  },
  {
   "type": "taci",
-  "day": "2026-08-04",
-  "areas": [
-   "Face"
-  ],
-  "dateOnly": true,
-  "note": "",
-  "slot": "night"
- },
- {
-  "type": "taci",
-  "day": "2026-08-06",
+  "day": "2025-02-28",
   "areas": [
    "Face"
   ],
@@ -57,33 +43,50 @@
  },
  {
   "type": "steroid",
-  "day": "2026-08-07",
+  "day": "2025-03-02",
   "areas": [
-   "Arms"
-  ],
-  "dateOnly": true,
-  "note": ""
- },
- {
-  "type": "anti",
-  "day": "2026-08-07",
-  "at": "2026-08-07T19:30:00",
-  "areas": [],
-  "note": ""
- },
- {
-  "type": "steroid",
-  "day": "2026-08-08",
-  "areas": [
-   "Entire body",
-   "Face"
+   "Face",
+   "side"
   ],
   "dateOnly": true,
   "note": ""
  },
  {
   "type": "taci",
-  "day": "2026-08-10",
+  "day": "2025-03-02",
+  "areas": [
+   "Face"
+  ],
+  "dateOnly": true,
+  "note": "",
+  "slot": "night"
+ },
+ {
+  "type": "anti",
+  "day": "2025-03-03",
+  "at": "2025-03-03T19:30:00",
+  "areas": [],
+  "note": ""
+ },
+ {
+  "type": "steroid",
+  "day": "2025-03-04",
+  "areas": [
+   "Arms",
+   "Stomach"
+  ],
+  "dateOnly": true,
+  "note": ""
+ },
+ {
+  "type": "note",
+  "day": "2025-03-04",
+  "areas": [],
+  "note": "teething, drooling a lot"
+ },
+ {
+  "type": "taci",
+  "day": "2025-03-05",
   "areas": [
    "Face"
   ],
@@ -93,28 +96,124 @@
  },
  {
   "type": "steroid",
-  "day": "2026-08-11",
+  "day": "2025-03-06",
   "areas": [
-   "Arms",
-   "Diaper",
-   "Neck"
+   "Stomach",
+   "Arms"
+  ],
+  "dateOnly": true,
+  "note": ""
+ },
+ {
+  "type": "taci",
+  "day": "2025-03-06",
+  "areas": [
+   "Face"
+  ],
+  "dateOnly": true,
+  "note": "",
+  "slot": "night"
+ },
+ {
+  "type": "steroid",
+  "day": "2025-03-07",
+  "areas": [
+   "Entire body",
+   "Face"
   ],
   "dateOnly": true,
   "note": ""
  },
  {
   "type": "anti",
-  "day": "2026-08-11",
-  "at": "2026-08-11T19:30:00",
+  "day": "2025-03-07",
+  "at": "2025-03-07T19:30:00",
+  "areas": [],
+  "note": ""
+ },
+ {
+  "type": "taci",
+  "day": "2025-03-08",
+  "areas": [
+   "Face"
+  ],
+  "dateOnly": true,
+  "note": "",
+  "slot": "night"
+ },
+ {
+  "type": "note",
+  "day": "2025-03-09",
+  "areas": [],
+  "note": "very scratchy at bedtime"
+ },
+ {
+  "type": "steroid",
+  "day": "2025-03-11",
+  "areas": [
+   "Face",
+   "Neck",
+   "Arms",
+   "knees"
+  ],
+  "dateOnly": true,
+  "note": ""
+ },
+ {
+  "type": "taci",
+  "day": "2025-03-11",
+  "areas": [
+   "Face"
+  ],
+  "dateOnly": true,
+  "note": "",
+  "slot": "night"
+ },
+ {
+  "type": "anti",
+  "day": "2025-03-11",
+  "at": "2025-03-11T19:30:00",
+  "areas": [],
+  "note": ""
+ },
+ {
+  "type": "anti",
+  "day": "2025-03-12",
+  "at": "2025-03-12T19:30:00",
+  "areas": [],
+  "note": ""
+ },
+ {
+  "type": "taci",
+  "day": "2025-03-13",
+  "areas": [
+   "Face"
+  ],
+  "dateOnly": true,
+  "note": "",
+  "slot": "night"
+ },
+ {
+  "type": "steroid",
+  "day": "2025-03-15",
+  "areas": [
+   "Diaper"
+  ],
+  "dateOnly": true,
+  "note": ""
+ },
+ {
+  "type": "anti",
+  "day": "2025-03-16",
+  "at": "2025-03-16T19:30:00",
   "areas": [],
   "note": ""
  },
  {
   "type": "steroid",
-  "day": "2026-08-12",
+  "day": "2025-03-17",
   "areas": [
-   "Neck",
-   "Stomach",
+   "Entire body",
    "Face"
   ],
   "dateOnly": true,
@@ -122,10 +221,73 @@
  },
  {
   "type": "steroid",
-  "day": "2026-08-14",
+  "day": "2025-03-21",
   "areas": [
-   "Face",
-   "Back",
+   "Arms"
+  ],
+  "dateOnly": true,
+  "note": ""
+ },
+ {
+  "type": "anti",
+  "day": "2025-03-21",
+  "at": "2025-03-21T19:30:00",
+  "areas": [],
+  "note": ""
+ },
+ {
+  "type": "steroid",
+  "day": "2025-03-24",
+  "areas": [
+   "Entire body",
+   "Face"
+  ],
+  "dateOnly": true,
+  "note": "post flight"
+ },
+ {
+  "type": "note",
+  "day": "2025-03-24",
+  "areas": [],
+  "note": "new bath wash"
+ },
+ {
+  "type": "steroid",
+  "day": "2025-03-25",
+  "areas": [
+   "Entire body"
+  ],
+  "dateOnly": true,
+  "note": "post flight"
+ },
+ {
+  "type": "taci",
+  "day": "2025-03-25",
+  "areas": [
+   "Face"
+  ],
+  "dateOnly": true,
+  "note": "",
+  "slot": "night"
+ },
+ {
+  "type": "anti",
+  "day": "2025-03-25",
+  "at": "2025-03-25T19:30:00",
+  "areas": [],
+  "note": "travel"
+ },
+ {
+  "type": "anti",
+  "day": "2025-03-29",
+  "at": "2025-03-29T19:30:00",
+  "areas": [],
+  "note": ""
+ },
+ {
+  "type": "steroid",
+  "day": "2025-04-01",
+  "areas": [
    "Stomach"
   ],
   "dateOnly": true,
@@ -133,10 +295,66 @@
  },
  {
   "type": "steroid",
-  "day": "2026-08-16",
+  "day": "2025-04-03",
   "areas": [
-   "Back",
+   "Legs",
+   "Neck",
+   "Diaper"
+  ],
+  "dateOnly": true,
+  "note": ""
+ },
+ {
+  "type": "steroid",
+  "day": "2025-04-04",
+  "areas": [
+   "Legs",
+   "Face"
+  ],
+  "dateOnly": true,
+  "note": ""
+ },
+ {
+  "type": "anti",
+  "day": "2025-04-05",
+  "at": "2025-04-05T19:30:00",
+  "areas": [],
+  "note": ""
+ },
+ {
+  "type": "anti",
+  "day": "2025-04-10",
+  "at": "2025-04-10T19:30:00",
+  "areas": [],
+  "note": ""
+ },
+ {
+  "type": "steroid",
+  "day": "2025-04-11",
+  "areas": [
+   "Stomach",
    "Diaper",
+   "Neck",
+   "knees"
+  ],
+  "dateOnly": true,
+  "note": ""
+ },
+ {
+  "type": "steroid",
+  "day": "2025-04-13",
+  "areas": [
+   "Entire body"
+  ],
+  "dateOnly": true,
+  "note": ""
+ },
+ {
+  "type": "steroid",
+  "day": "2025-04-14",
+  "areas": [
+   "Legs",
+   "Face",
    "shoulders"
   ],
   "dateOnly": true,
@@ -144,14 +362,67 @@
  },
  {
   "type": "anti",
-  "day": "2026-08-16",
-  "at": "2026-08-16T19:30:00",
+  "day": "2025-04-14",
+  "at": "2025-04-14T19:30:00",
+  "areas": [],
+  "note": ""
+ },
+ {
+  "type": "taci",
+  "day": "2025-04-16",
+  "areas": [
+   "Face"
+  ],
+  "dateOnly": true,
+  "note": "",
+  "slot": "night"
+ },
+ {
+  "type": "anti",
+  "day": "2025-04-18",
+  "at": "2025-04-18T19:30:00",
+  "areas": [],
+  "note": ""
+ },
+ {
+  "type": "taci",
+  "day": "2025-04-20",
+  "areas": [
+   "Face"
+  ],
+  "dateOnly": true,
+  "note": "",
+  "slot": "night"
+ },
+ {
+  "type": "taci",
+  "day": "2025-04-21",
+  "areas": [
+   "Face"
+  ],
+  "dateOnly": true,
+  "note": "",
+  "slot": "morning"
+ },
+ {
+  "type": "allergen",
+  "day": "2025-04-22",
+  "at": "2025-04-22T12:00:00",
+  "allergen": "Peanut",
+  "amount": "1/12 serving",
+  "areas": [],
+  "note": ""
+ },
+ {
+  "type": "anti",
+  "day": "2025-04-23",
+  "at": "2025-04-23T19:30:00",
   "areas": [],
   "note": ""
  },
  {
   "type": "steroid",
-  "day": "2026-08-19",
+  "day": "2025-04-25",
   "areas": [
    "Back"
   ],
@@ -160,7 +431,7 @@
  },
  {
   "type": "taci",
-  "day": "2026-08-19",
+  "day": "2025-04-25",
   "areas": [
    "Face"
   ],
@@ -169,21 +440,33 @@
   "slot": "night"
  },
  {
-  "type": "anti",
-  "day": "2026-08-19",
-  "at": "2026-08-19T19:30:00",
+  "type": "allergen",
+  "day": "2025-04-25",
+  "at": "2025-04-25T12:00:00",
+  "allergen": "Peanut",
+  "amount": "1/12 serving",
   "areas": [],
   "note": ""
  },
  {
-  "type": "note",
-  "day": "2026-08-21",
+  "type": "anti",
+  "day": "2025-04-28",
+  "at": "2025-04-28T19:30:00",
   "areas": [],
-  "note": "very scratchy at bedtime"
+  "note": ""
+ },
+ {
+  "type": "allergen",
+  "day": "2025-04-29",
+  "at": "2025-04-29T12:00:00",
+  "allergen": "Peanut",
+  "amount": "1/12 serving",
+  "areas": [],
+  "note": ""
  },
  {
   "type": "taci",
-  "day": "2026-08-23",
+  "day": "2025-04-30",
   "areas": [
    "Face"
   ],
@@ -192,137 +475,46 @@
   "slot": "night"
  },
  {
-  "type": "anti",
-  "day": "2026-08-23",
-  "at": "2026-08-23T19:30:00",
-  "areas": [],
-  "note": ""
+  "type": "taci",
+  "day": "2025-05-01",
+  "areas": [
+   "Face"
+  ],
+  "dateOnly": true,
+  "note": "",
+  "slot": "morning"
  },
  {
   "type": "steroid",
-  "day": "2026-08-25",
+  "day": "2025-05-02",
   "areas": [
    "Arms",
-   "Stomach",
    "Neck",
-   "knees"
-  ],
-  "dateOnly": true,
-  "note": ""
- },
- {
-  "type": "steroid",
-  "day": "2026-08-26",
-  "areas": [
-   "Arms"
-  ],
-  "dateOnly": true,
-  "note": ""
- },
- {
-  "type": "steroid",
-  "day": "2026-08-27",
-  "areas": [
-   "Entire body"
-  ],
-  "dateOnly": true,
-  "note": ""
- },
- {
-  "type": "taci",
-  "day": "2026-08-27",
-  "areas": [
-   "Face"
-  ],
-  "dateOnly": true,
-  "note": "",
-  "slot": "night"
- },
- {
-  "type": "anti",
-  "day": "2026-08-27",
-  "at": "2026-08-27T19:30:00",
-  "areas": [],
-  "note": ""
- },
- {
-  "type": "note",
-  "day": "2026-08-27",
-  "areas": [],
-  "note": "slept badly"
- },
- {
-  "type": "steroid",
-  "day": "2026-08-29",
-  "areas": [
-   "Face"
-  ],
-  "dateOnly": true,
-  "note": ""
- },
- {
-  "type": "steroid",
-  "day": "2026-08-30",
-  "areas": [
-   "Stomach",
-   "Face",
-   "Legs"
-  ],
-  "dateOnly": true,
-  "note": ""
- },
- {
-  "type": "steroid",
-  "day": "2026-08-31",
-  "areas": [
-   "Entire body"
-  ],
-  "dateOnly": true,
-  "note": "post flight"
- },
- {
-  "type": "steroid",
-  "day": "2026-09-01",
-  "areas": [
-   "Entire body"
-  ],
-  "dateOnly": true,
-  "note": "post flight"
- },
- {
-  "type": "steroid",
-  "day": "2026-09-02",
-  "areas": [
-   "Entire body"
-  ],
-  "dateOnly": true,
-  "note": "post flight"
- },
- {
-  "type": "note",
-  "day": "2026-09-02",
-  "areas": [],
-  "note": "new bath wash"
- },
- {
-  "type": "steroid",
-  "day": "2026-09-03",
-  "areas": [
-   "Back"
+   "Back",
+   "elbows"
   ],
   "dateOnly": true,
   "note": ""
  },
  {
   "type": "anti",
-  "day": "2026-09-03",
-  "at": "2026-09-03T19:30:00",
+  "day": "2025-05-02",
+  "at": "2025-05-02T19:30:00",
   "areas": [],
-  "note": "travel"
+  "note": ""
+ },
+ {
+  "type": "allergen",
+  "day": "2025-05-02",
+  "at": "2025-05-02T12:00:00",
+  "allergen": "Peanut",
+  "amount": "1/12 serving",
+  "areas": [],
+  "note": ""
  },
  {
   "type": "steroid",
-  "day": "2026-09-06",
+  "day": "2025-05-03",
   "areas": [
    "Neck"
   ],
@@ -330,130 +522,47 @@
   "note": ""
  },
  {
-  "type": "taci",
-  "day": "2026-09-07",
-  "areas": [
-   "Face"
-  ],
-  "dateOnly": true,
-  "note": "",
-  "slot": "morning"
- },
- {
   "type": "steroid",
-  "day": "2026-09-08",
+  "day": "2025-05-04",
   "areas": [
-   "Back"
-  ],
-  "dateOnly": true,
-  "note": ""
- },
- {
-  "type": "taci",
-  "day": "2026-09-08",
-  "areas": [
-   "Face"
-  ],
-  "dateOnly": true,
-  "note": "",
-  "slot": "morning"
- },
- {
-  "type": "anti",
-  "day": "2026-09-08",
-  "at": "2026-09-08T19:30:00",
-  "areas": [],
-  "note": ""
- },
- {
-  "type": "taci",
-  "day": "2026-09-10",
-  "areas": [
-   "Face"
-  ],
-  "dateOnly": true,
-  "note": "",
-  "slot": "night"
- },
- {
-  "type": "note",
-  "day": "2026-09-12",
-  "areas": [],
-  "note": "long day outside"
- },
- {
-  "type": "steroid",
-  "day": "2026-09-14",
-  "areas": [
-   "Neck",
-   "side"
+   "Entire body"
   ],
   "dateOnly": true,
   "note": ""
  },
  {
   "type": "steroid",
-  "day": "2026-09-15",
+  "day": "2025-05-05",
+  "areas": [
+   "Entire body",
+   "Face"
+  ],
+  "dateOnly": true,
+  "note": ""
+ },
+ {
+  "type": "flare",
+  "day": "2025-05-05",
+  "at": "2025-05-05T18:00:00",
   "areas": [
    "Legs"
   ],
-  "dateOnly": true,
-  "note": ""
- },
- {
-  "type": "taci",
-  "day": "2026-09-21",
-  "areas": [
-   "Face"
-  ],
-  "dateOnly": true,
-  "note": "",
-  "slot": "morning"
- },
- {
-  "type": "anti",
-  "day": "2026-09-21",
-  "at": "2026-09-21T19:30:00",
-  "areas": [],
-  "note": ""
+  "note": "sick, fever"
  },
  {
   "type": "steroid",
-  "day": "2026-09-22",
+  "day": "2025-05-06",
   "areas": [
-   "Entire body"
-  ],
-  "dateOnly": true,
-  "note": ""
- },
- {
-  "type": "steroid",
-  "day": "2026-09-23",
-  "areas": [
-   "Entire body"
-  ],
-  "dateOnly": true,
-  "note": ""
- },
- {
-  "type": "anti",
-  "day": "2026-09-23",
-  "at": "2026-09-23T19:30:00",
-  "areas": [],
-  "note": ""
- },
- {
-  "type": "steroid",
-  "day": "2026-09-24",
-  "areas": [
-   "Legs"
+   "Face",
+   "Stomach",
+   "shoulders"
   ],
   "dateOnly": true,
   "note": ""
  },
  {
   "type": "taci",
-  "day": "2026-09-25",
+  "day": "2025-05-06",
   "areas": [
    "Face"
   ],
@@ -463,120 +572,45 @@
  },
  {
   "type": "anti",
-  "day": "2026-09-25",
-  "at": "2026-09-25T19:30:00",
-  "areas": [],
-  "note": ""
- },
- {
-  "type": "taci",
-  "day": "2026-09-26",
-  "areas": [
-   "Face"
-  ],
-  "dateOnly": true,
-  "note": "",
-  "slot": "night"
- },
- {
-  "type": "taci",
-  "day": "2026-09-27",
-  "areas": [
-   "Face"
-  ],
-  "dateOnly": true,
-  "note": "",
-  "slot": "morning"
- },
- {
-  "type": "steroid",
-  "day": "2026-09-28",
-  "areas": [
-   "Entire body"
-  ],
-  "dateOnly": true,
-  "note": ""
- },
- {
-  "type": "taci",
-  "day": "2026-09-28",
-  "areas": [
-   "Face"
-  ],
-  "dateOnly": true,
-  "note": "",
-  "slot": "morning"
- },
- {
-  "type": "anti",
-  "day": "2026-09-29",
-  "at": "2026-09-29T19:30:00",
+  "day": "2025-05-06",
+  "at": "2025-05-06T19:30:00",
   "areas": [],
   "note": ""
  },
  {
   "type": "allergen",
-  "day": "2026-09-29",
-  "at": "2026-09-29T12:00:00",
-  "allergen": "Egg",
+  "day": "2025-05-06",
+  "at": "2025-05-06T12:00:00",
+  "allergen": "Peanut",
   "amount": "1/12 serving",
   "areas": [],
   "note": ""
- },
- {
-  "type": "taci",
-  "day": "2026-10-01",
-  "areas": [
-   "Face"
-  ],
-  "dateOnly": true,
-  "note": "",
-  "slot": "morning"
  },
  {
   "type": "note",
-  "day": "2026-10-01",
+  "day": "2025-05-07",
   "areas": [],
-  "note": "new laundry detergent"
- },
- {
-  "type": "taci",
-  "day": "2026-10-02",
-  "areas": [
-   "Face"
-  ],
-  "dateOnly": true,
-  "note": "",
-  "slot": "morning"
- },
- {
-  "type": "anti",
-  "day": "2026-10-02",
-  "at": "2026-10-02T19:30:00",
-  "areas": [],
-  "note": ""
+  "note": "new bath wash"
  },
  {
   "type": "allergen",
-  "day": "2026-10-02",
-  "at": "2026-10-02T12:00:00",
-  "allergen": "Egg",
+  "day": "2025-05-09",
+  "at": "2025-05-09T12:00:00",
+  "allergen": "Peanut",
   "amount": "1/12 serving",
   "areas": [],
   "note": ""
  },
  {
-  "type": "steroid",
-  "day": "2026-10-04",
-  "areas": [
-   "Entire body"
-  ],
-  "dateOnly": true,
+  "type": "anti",
+  "day": "2025-05-10",
+  "at": "2025-05-10T19:30:00",
+  "areas": [],
   "note": ""
  },
  {
   "type": "taci",
-  "day": "2026-10-04",
+  "day": "2025-05-12",
   "areas": [
    "Face"
   ],
@@ -586,295 +620,72 @@
  },
  {
   "type": "steroid",
-  "day": "2026-10-05",
+  "day": "2025-05-13",
   "areas": [
-   "Neck",
-   "Legs"
-  ],
-  "dateOnly": true,
-  "note": ""
- },
- {
-  "type": "steroid",
-  "day": "2026-10-06",
-  "areas": [
+   "Back",
    "Arms"
   ],
   "dateOnly": true,
   "note": ""
  },
  {
-  "type": "anti",
-  "day": "2026-10-06",
-  "at": "2026-10-06T19:30:00",
-  "areas": [],
-  "note": ""
- },
- {
   "type": "allergen",
-  "day": "2026-10-06",
-  "at": "2026-10-06T12:00:00",
-  "allergen": "Egg",
-  "amount": "1/12 serving",
-  "areas": [],
-  "note": ""
- },
- {
-  "type": "taci",
-  "day": "2026-10-07",
-  "areas": [
-   "Face"
-  ],
-  "dateOnly": true,
-  "note": "",
-  "slot": "night"
- },
- {
-  "type": "anti",
-  "day": "2026-10-08",
-  "at": "2026-10-08T19:30:00",
-  "areas": [],
-  "note": ""
- },
- {
-  "type": "steroid",
-  "day": "2026-10-09",
-  "areas": [
-   "Back"
-  ],
-  "dateOnly": true,
-  "note": ""
- },
- {
-  "type": "allergen",
-  "day": "2026-10-09",
-  "at": "2026-10-09T12:00:00",
-  "allergen": "Egg",
-  "amount": "1/12 serving",
-  "areas": [],
-  "note": ""
- },
- {
-  "type": "flare",
-  "day": "2026-10-09",
-  "at": "2026-10-09T18:00:00",
-  "areas": [
-   "Face"
-  ],
-  "note": "sick, fever"
- },
- {
-  "type": "taci",
-  "day": "2026-10-10",
-  "areas": [
-   "Face"
-  ],
-  "dateOnly": true,
-  "note": "",
-  "slot": "morning"
- },
- {
-  "type": "anti",
-  "day": "2026-10-10",
-  "at": "2026-10-10T19:30:00",
-  "areas": [],
-  "note": ""
- },
- {
-  "type": "steroid",
-  "day": "2026-10-11",
-  "areas": [
-   "Legs",
-   "Face",
-   "Stomach",
-   "knees"
-  ],
-  "dateOnly": true,
-  "note": ""
- },
- {
-  "type": "taci",
-  "day": "2026-10-11",
-  "areas": [
-   "Face"
-  ],
-  "dateOnly": true,
-  "note": "",
-  "slot": "night"
- },
- {
-  "type": "anti",
-  "day": "2026-10-11",
-  "at": "2026-10-11T19:30:00",
-  "areas": [],
-  "note": ""
- },
- {
-  "type": "anti",
-  "day": "2026-10-12",
-  "at": "2026-10-12T19:30:00",
-  "areas": [],
-  "note": ""
- },
- {
-  "type": "steroid",
-  "day": "2026-10-13",
-  "areas": [
-   "Entire body",
-   "Face"
-  ],
-  "dateOnly": true,
-  "note": ""
- },
- {
-  "type": "taci",
-  "day": "2026-10-13",
-  "areas": [
-   "Face"
-  ],
-  "dateOnly": true,
-  "note": "",
-  "slot": "night"
- },
- {
-  "type": "anti",
-  "day": "2026-10-13",
-  "at": "2026-10-13T19:30:00",
-  "areas": [],
-  "note": ""
- },
- {
-  "type": "allergen",
-  "day": "2026-10-13",
-  "at": "2026-10-13T12:00:00",
-  "allergen": "Egg",
-  "amount": "1/12 serving",
-  "areas": [],
-  "note": ""
- },
- {
-  "type": "note",
-  "day": "2026-10-13",
-  "areas": [],
-  "note": "ate tomato sauce at daycare"
- },
- {
-  "type": "taci",
-  "day": "2026-10-14",
-  "areas": [
-   "Face"
-  ],
-  "dateOnly": true,
-  "note": "",
-  "slot": "night"
- },
- {
-  "type": "anti",
-  "day": "2026-10-14",
-  "at": "2026-10-14T19:30:00",
-  "areas": [],
-  "note": ""
- },
- {
-  "type": "note",
-  "day": "2026-10-14",
-  "areas": [],
-  "note": "ate tomato sauce at daycare"
- },
- {
-  "type": "taci",
-  "day": "2026-10-15",
-  "areas": [
-   "Face"
-  ],
-  "dateOnly": true,
-  "note": "",
-  "slot": "night"
- },
- {
-  "type": "allergen",
-  "day": "2026-10-16",
-  "at": "2026-10-16T12:00:00",
-  "allergen": "Egg",
+  "day": "2025-05-13",
+  "at": "2025-05-13T12:00:00",
+  "allergen": "Peanut",
   "amount": "1/12 serving",
   "areas": [],
   "note": ""
  },
  {
   "type": "steroid",
-  "day": "2026-10-18",
-  "areas": [
-   "Face",
-   "Back",
-   "Neck",
-   "wrists"
-  ],
-  "dateOnly": true,
-  "note": ""
- },
- {
-  "type": "steroid",
-  "day": "2026-10-19",
+  "day": "2025-05-14",
   "areas": [
    "Arms",
-   "knees"
+   "side"
   ],
   "dateOnly": true,
   "note": ""
- },
- {
-  "type": "taci",
-  "day": "2026-10-20",
-  "areas": [
-   "Face"
-  ],
-  "dateOnly": true,
-  "note": "",
-  "slot": "morning"
- },
- {
-  "type": "allergen",
-  "day": "2026-10-20",
-  "at": "2026-10-20T12:00:00",
-  "allergen": "Egg",
-  "amount": "1/12 serving",
-  "areas": [],
-  "note": ""
- },
- {
-  "type": "taci",
-  "day": "2026-10-21",
-  "areas": [
-   "Face"
-  ],
-  "dateOnly": true,
-  "note": "",
-  "slot": "morning"
  },
  {
   "type": "anti",
-  "day": "2026-10-22",
-  "at": "2026-10-22T19:30:00",
+  "day": "2025-05-15",
+  "at": "2025-05-15T19:30:00",
   "areas": [],
   "note": ""
  },
  {
+  "type": "allergen",
+  "day": "2025-05-16",
+  "at": "2025-05-16T12:00:00",
+  "allergen": "Peanut",
+  "amount": "1/12 serving",
+  "areas": [],
+  "note": ""
+ },
+ {
+  "type": "note",
+  "day": "2025-05-16",
+  "areas": [],
+  "note": "very scratchy at bedtime"
+ },
+ {
   "type": "steroid",
-  "day": "2026-10-23",
+  "day": "2025-05-18",
   "areas": [
-   "Entire body",
-   "Face"
+   "Stomach"
   ],
   "dateOnly": true,
   "note": ""
  },
  {
-  "type": "allergen",
-  "day": "2026-10-23",
-  "at": "2026-10-23T12:00:00",
-  "allergen": "Egg",
-  "amount": "1/12 serving",
-  "areas": [],
-  "note": ""
+  "type": "taci",
+  "day": "2025-05-18",
+  "areas": [
+   "Face"
+  ],
+  "dateOnly": true,
+  "note": "",
+  "slot": "morning"
  }
 ]

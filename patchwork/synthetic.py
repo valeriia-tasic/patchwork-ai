@@ -26,7 +26,7 @@ def generate(weeks: int = 12, seed: int = 7, end: date | None = None, profile: P
     travel_start = start + timedelta(days=7 * (weeks // 3))
     calm_start = start + timedelta(days=7 * (weeks // 2))
     sick_start = end - timedelta(days=17)
-    allergen = p.allergens[1] if len(p.allergens) > 1 else (p.allergens[0] if p.allergens else "")
+    allergen = "Peanut" if "Peanut" in p.allergens else (p.allergens[0] if p.allergens else "")
     subs = [s for s in SUB_AREAS if p.categories_for(s)]
 
     out: list[dict] = []

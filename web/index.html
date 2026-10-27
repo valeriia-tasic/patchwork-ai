@@ -209,6 +209,7 @@ function avgPerTreatedArea(evs,c){const per={};evs.forEach(e=>creamAreas(e,c).fo
   const n=Object.keys(per).length;if(!n)return 0;let tot=0;Object.values(per).forEach(s=>tot+=s.size);return Math.round(tot/n*10)/10;}
 
 const $=id=>document.getElementById(id);
+let NOW=null;const now=()=>NOW?new Date(NOW):new Date(); // demo mode pins "today" to the sample data
 let db=null, entries=[], cur=null, picked=new Set(), slot="", allergen="", pendingDel=null, saving=false, demo=false;
 
 function pad(n){return String(n).padStart(2,"0")}
@@ -234,10 +235,10 @@ function renderChips(){
   $("otherAllergen").hidden=allergen!=="Other";
 }
 function openSheet(t){
-  cur=t;const T=TYPES[t];picked=new Set(T.preset||[]);allergen="";slot=T.slots?(new Date().getHours()<14?"morning":"night"):"";
+  cur=t;const T=TYPES[t];picked=new Set(T.preset||[]);allergen="";slot=T.slots?(now().getHours()<14?"morning":"night"):"";
   const s=$("sheet");s.style.setProperty("--cur",T.color);
   $("sheetTitle").textContent=T.name;$("areaBlock").hidden=!T.areas;$("slotBlock").hidden=!T.slots;$("allergenBlock").hidden=T.kind!=="allergen";
-  const w=$("when");w.type=T.dateOnly?"date":"datetime-local";w.value=T.dateOnly?dayKey(new Date()):localInput(new Date());
+  const w=$("when");w.type=T.dateOnly?"date":"datetime-local";w.value=T.dateOnly?dayKey(now()):localInput(now());
   $("whenLabel").textContent=T.dateOnly?"Date":"When";$("note").value="";$("otherArea").value="";$("otherAllergen").value="";$("amount").value="";$("err").hidden=true;
   renderChips();s.hidden=false;s.scrollIntoView({block:"nearest",behavior:"smooth"});
 }
@@ -270,7 +271,7 @@ $("sheet").addEventListener("submit",async e=>{
   finally{saving=false;$("save").textContent="Save"}
 });
 
-function weekStarts(n){const now=new Date();const mon=new Date(now.getFullYear(),now.getMonth(),now.getDate());mon.setDate(mon.getDate()-((mon.getDay()+6)%7));
+function weekStarts(n){const t0=now();const mon=new Date(t0.getFullYear(),t0.getMonth(),t0.getDate());mon.setDate(mon.getDate()-((mon.getDay()+6)%7));
   const out=[];for(let i=n-1;i>=0;i--){const s=new Date(mon);s.setDate(s.getDate()-7*i);out.push(s)}return out}
 function weekKey(day){const p=day.split("-").map(Number);const d=new Date(p[0],p[1]-1,p[2]);d.setDate(d.getDate()-((d.getDay()+6)%7));return dayKey(d)}
 
@@ -295,8 +296,8 @@ function drawAreas(){
   if(!AREA_CREAM){$("areaSection").hidden=true;return}
   const c=AREA_CREAM;$("alabel").textContent=c.name+" by body area · last 4 weeks";
   $("areaNote").textContent="Full body counts toward "+FULL.join(", ").toLowerCase()+"."+(AREAS.filter(a=>!FULL.includes(a)).length?" "+AREAS.filter(a=>!FULL.includes(a)).join(" and ")+" are tracked separately.":"");
-  const g=$("mgrid");const N=4;const today=new Date();today.setHours(12,0,0,0);
-  const dnum=k=>{const p=k.split("-").map(Number);return Math.round(new Date(p[0],p[1]-1,p[2],12)/864e5)};
+  const g=$("mgrid");const N=4;const today=now();today.setHours(12,0,0,0);
+  const dnum=k=>{const p=k.split("-").map(Number);return Date.UTC(p[0],p[1]-1,p[2])/864e5};
   const t=dnum(dayKey(today));
   const per={};c.allowed.forEach(a=>per[a]=new Set());
   entries.forEach(e=>{if(e.type!==c.id||!e.day)return;creamAreas(e,c).forEach(a=>per[a].add(e.day))});
@@ -329,7 +330,7 @@ function drawAreas(){
 
 function render(){
   drawChart();drawAreas();
-  const now=new Date();const ym=now.getFullYear()+"-"+pad(now.getMonth()+1);
+  const t0=now();const ym=t0.getFullYear()+"-"+pad(t0.getMonth()+1);
   const days=t=>new Set(entries.filter(e=>e.type===t&&(e.day||"").startsWith(ym)).map(e=>e.day)).size;
   const st=$("stats");st.innerHTML="";
   CREAMS.map(c=>[c.id,c.name,c.color]).concat(AH.enabled?[["anti",AH.brand,safeColor(AH.color||"#6a4fb3")]]:[]).forEach(([id,name,color])=>{
@@ -337,7 +338,7 @@ function render(){
     const b=document.createElement("b");b.textContent=days(id);const sp=document.createElement("span");sp.textContent=name;d.append(b,sp);st.appendChild(d)});
   const L=$("lastLine");L.textContent="";
   if(AREA_CREAM){const ls=entries.find(e=>e.type===AREA_CREAM.id);
-    if(ls){const d=new Date(ls.atMs);const ago=Math.round((new Date(dayKey(now))-new Date(dayKey(d)))/864e5);
+    if(ls){const d=new Date(ls.atMs);const ago=Math.round((new Date(dayKey(t0))-new Date(dayKey(d)))/864e5);
       L.append("Last "+AREA_CREAM.name.toLowerCase()+": ");const s=document.createElement("strong");s.textContent=ago===0?"today":ago===1?"yesterday":ago+" days ago";
       L.append(s," · "+(ls.areas||[]).join(", ")+(ls.slot?" · "+ls.slot:""));}
     else L.textContent="Last "+AREA_CREAM.name.toLowerCase()+": none logged yet";}
@@ -378,7 +379,7 @@ applyProfile(PROFILE);
       const r=await fetch("../data/sample_entries.json");
       if(!r.ok)throw 0;
       entries=(await r.json()).map((e,i)=>Object.assign({id:"demo-"+i,atMs:Date.parse(e.at||e.day+"T12:00:00")},e)).sort((a,b)=>b.atMs-a.atMs);
-      demo=true;document.querySelector(".sub").textContent="Demo mode: synthetic data, read-only.";
+      demo=true;NOW=entries.length?entries[0].atMs:null;document.querySelector(".sub").textContent="Demo mode: synthetic data, read-only.";
       render();
     }catch(x){$("emptyMsg").textContent="Open this page as a Claude artifact to log entries, or serve the repo locally to see the demo.";}
     return;
