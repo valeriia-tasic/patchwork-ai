@@ -24,25 +24,26 @@ This repo is the production code, published with synthetic data. No real health 
 Managing a toddler's moderate eczema means juggling several treatments: a daily cream, a steroid on active patches, an antihistamine on bad days. The questions that matter at a dermatologist visit are about *patterns*, and a parent's memory at 7pm is a poor database:
 
 - How often is steroid going on, and on which areas?
-- Is any one area getting more than the doctor's limit?
+- Is any one area getting more than allowed by the medication?
 - Is the antihistamine creeping from occasional to daily?
-- Do flares follow travel, illness, new foods?
+- Is there a clear trigger for flares? 
 
 Paper logs and notes apps capture *what happened* but never answer those questions. Generic trackers ask for too much input at the worst moment of the day.
 
 ## Who it's for
+
+Parents who were placed in a difficult situation: keeping track of medications for their child, while trying to learn more about atopic dermatitis, find answers to common triggers, and stay on top of their doctor's recommendations on creams, food introductions, and flares.
 
 One parent, mid-bedtime, holding a wriggling toddler. That user sets every constraint:
 
 | Constraint | Design response |
 |---|---|
 | Hands full, attention split | Five big buttons; most entries are two taps |
-| Bedtime routine, not a clinical diary | Creams are logged by **date**, or Morning / Night when that matters; no time picker |
 | Every family's treatments differ | A first-use questionnaire builds the profile: areas, creams, limits, antihistamine, allergens |
+| Bedtime routine, not a clinical diary | Creams are logged by **date**, or Morning / Night when that matters; no time picker |
 | Wants answers, not dashboards | Silent unless a rule trips; one weekly email |
 | Will show this to a doctor | Deterministic counts, documented definitions |
 
-<!-- YOU: one or two sentences in your own voice about why you built it. -->
 
 ## How it works
 
@@ -59,29 +60,43 @@ flowchart LR
   W --> MAIL[Email report + 2 charts]
 ```
 
-**The core design choice: the LLM operates the system; it does not do the math.**
+**The core design choices**
 
-- The **profile** is the single source of truth: body areas, what "full body" covers, creams and their limits, the antihistamine, allergen tracking. `rules.json` is the default; the questionnaire writes your own to `private/profile.json`. The page, the Python package and the tests all read it.
-- `patchwork/` is plain, deterministic Python: same input, same report, every time. It is unit-tested.
-- The agent (Claude, on a schedule) does only what code can't do well on its own: pull the latest entries, run the package, write one human sentence of summary, and deliver the result.
+  The LLM operates the system — it does not do the math.                                 
+  When you're dealing with sensitive medical data and medications that require precise measurement, you cannot rely on the creativity of an LLM. The **profile** is the single source of truth: body areas, what "full body" covers, creams and their limits, the antihistamine, allergen tracking. `rules.json` is the default; the questionnaire writes your own to `private/profile.json`. The page, the Python package, and the tests all read it.
 
-Why: a report a parent shows a doctor has to be *right* and *repeatable*. Early versions let the model count and draw charts itself; the numbers were usually right, but "usually" isn't good enough, and the charts drifted week to week. See [DECISIONS.md](DECISIONS.md).
+  It operates on structured data, with a deterministic Python script to track and store the data. Where the agent comes into play is transferring that precise data into insights for parents from the findings of the script, presenting those insights in plain language — and delivering them seamlessly by sending weekly emails with findings reports and daily checks against triggers.
+
+- **Rules live in code, not in prompts.** Your doctor set those limits for a reason. The agent follows them exactly by following the script and its defined rules — it has no power to drift from those limits.
+- **Quiet unless it matters.** Bedtime is already hard. You shouldn't have to check anything. The only notification you'll get is when a medication limit is approaching or a trend needs attention.
+- **Your child's health history is not a dataset.** No real medical data ever enters this repo. A test fails the build if it finds a private link, an email address, or any term from a local denylist in a published file — keeping your child's health history where it belongs.
+
+  See [DECISIONS.md](DECISIONS.md)     
+
 
 ## What the agent checks
 
-All limits are the parent's own, set in the questionnaire from their doctor's instructions.
+All limits are the parent's own, set once during the first-use questionnaire based on your doctor's instructions. One setup — and the agent does the rest.
 
-**Nightly (push only when something trips)**
+**Nightly push (only when something trips)**
+
 - Antihistamine given more often than the parent's limit (e.g. more than once in 3 days)
-- Any body area getting a cream on more days than its per-area weekly limit, or a cream over its total weekly limit
+- Any body area getting a medical ointment on more days than its per-area weekly limit, or a cream over its total weekly limit
 - Meaningful trends: this week vs. the 3 weeks before (≥ 1.5 days/week change), with the week's notes and allergen exposures as context
 
-**Weekly report**
-- Each cream: total days, Morning / Night split if used; for creams used on several areas, average applications per treated area, most-affected areas, any area over the limit
+**Weekly report (Emailed directly to your inbox with summary and visuals)**
+
+<p align="center">
+  <img src="docs/weekly-email.png" alt="The Sunday report email" width="520"><br>
+  <em>The log page in a phone browser, and the Sunday report as it lands in the inbox.<br>All screenshots use a synthetic log for a fictional toddler.</em>
+</p> 
+
+- Each medicine: total days, Morning / Night split if used; for creams used on several areas, average applications per treated area, most-affected areas, any area over the limit
 - Antihistamine: total days, average gap between doses
 - Flares and notes; allergen exposures with amounts
 - Trends: which areas are rising or falling, against each area's 12-week average
 - Two charts: a 10-week overview, and the main cream by body area as small multiples
+
 
 ## First-use setup
 
@@ -157,11 +172,11 @@ Changed the default profile? Run `python -m patchwork page --profile rules.json`
 
 ## Results
 
-<!-- YOU: fill this in from real use, without health specifics. Ideas:
-- weeks in use, entries logged, average seconds per entry
-- alerts fired vs. alerts that were useful
-- one pattern the report surfaced that changed a conversation with the doctor
--->
+I have been personally using and tracking my daughter's stats for the last 10 weeks, and I can confidently say it has decreased my nightly routine stress by a lot. Instead of trying to calculate when the cream was last used, whether it's being used more than before, or whether to try the antihistamine instead — I open one page and make a choice in seconds, not the long and dreadful minutes of trying to remember ahead of time while dealing with a crying toddler.
+
+No more anxiety about staying within doctor's guidelines. I can now clearly see that my daughter has dramatically improved and requires far less medical intervention than she did months ago.
+
+This has been personally tested, updated, and continuously improved to make bedtime a little easier for any parent managing a child's medical routine.
 
 ## What's next
 
