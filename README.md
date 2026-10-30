@@ -1,8 +1,12 @@
 # Patchwork
 
-**An AI agent that turns a parent's 5-second taps into eczema insights.**
+**An AI agent that helps a worried parent — one with too much to juggle — feel a little more at ease about medical tracking.**
 
-Patchwork is a small, real system I run for my own family, built so any family can set it up in a few minutes. A parent logs skin treatments with one tap on a phone. Every night an agent checks the log against a few rules and pushes an alert only when something needs attention. Every Sunday it emails a one-screen report with two charts.
+I am that parent: worried, underslept, striving to do right by my daughter and keep her health on track. She is an amazing toddler who has struggled with borderline severe eczema since she was 3 months old. After months of trying different ointments, medications, and approaches we finally found something that works — but it generated 5 spreadsheets, manual calculations, and a daily question: "When did we last put on the medication?"
+
+Patchwork is a small, real system I run for my own family, built so any family can set it up in a few minutes. A parent logs skin treatments with one tap on a phone. Every night an agent checks the log against a set of medical guidelines and parent-set rules, and pushes an alert only when something needs attention.
+
+When you need to know whether you can apply more medication because your child is in pain — you check the page with its clear visual tracker. When you need to know how bad the week was — you read an automatic email sent every Sunday with treatment trends, visual and ready to share with a doctor.
 
 This repo is the production code, published with synthetic data. No real health data lives here.
 
@@ -12,20 +16,6 @@ This repo is the production code, published with synthetic data. No real health 
   <img src="docs/phone-charts.png" alt="Weekly overview and body-area charts on the phone" width="200">
   <img src="docs/phone-areas.png" alt="Steroid by body area against each area's 12-week average" width="200">
 </p>
-
-<p align="center">
-  <img src="docs/weekly-email.png" alt="The Sunday report email" width="520"><br>
-  <em>The log page in a phone browser, and the Sunday report as it lands in the inbox.<br>All screenshots use a synthetic log for a fictional toddler.</em>
-</p>
-
-<details>
-<summary>Page screenshots without the phone frame</summary>
-<p align="center">
-  <img src="docs/log-page.png" alt="The log page" width="250">
-  <img src="docs/log-entry.png" alt="Logging a steroid application" width="250">
-  <img src="docs/log-areas.png" alt="Steroid by body area" width="250">
-</p>
-</details>
 
 ---
 
