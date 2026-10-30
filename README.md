@@ -87,7 +87,7 @@ All limits are the parent's own, set once during the first-use questionnaire bas
 **Weekly report (Emailed directly to your inbox with summary and visuals)**
 
 <p align="center">
-  <img src="docs/weekly-email.png" alt="The Sunday report email" width="520"><br>
+  <img src="docs/weekly-email.png" alt="The Sunday report email" width="300"><br>
   <em>The log page in a phone browser, and the Sunday report as it lands in the inbox.<br>All screenshots use a synthetic log for a fictional toddler.</em>
 </p> 
 
