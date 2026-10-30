@@ -21,7 +21,7 @@ This repo is the production code, published with synthetic data. No real health 
 
 ## The problem
 
-Managing a toddler's moderate eczema means juggling several treatments: a daily cream, a steroid on active patches, an antihistamine on bad days. The questions that matter at a dermatologist visit are about *patterns*, and a parent's memory at 7pm is a poor database:
+Managing a toddler's eczema means juggling several treatments: a daily cream, a steroid on active patches, an antihistamine on bad days. The questions that matter at a dermatologist visit are about *patterns*, and a parent's memory at 7pm is a poor database:
 
 - How often is steroid going on, and on which areas?
 - Is any one area getting more than allowed by the medication?

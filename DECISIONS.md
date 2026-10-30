@@ -18,17 +18,17 @@ Short records of product and technical choices: what we decided, why, and what w
 **Why.** Every extra field is an entry that doesn't get logged. Time of day added nothing for these treatments.
 **Trade-off.** No time-of-day analysis for creams.
 
-### 3. Body areas are seven fixed categories
+### 3. Body areas are named categories, not free text
 
 **Context.** Free-text areas ("shoulders", "small side", "dots on thumbs") made counts impossible to compare.
-**Decision.** Seven categories: Arms, Legs, Stomach, Back, Neck, Face, Diaper. Sub-areas roll up (shoulders → Arms, ankles → Legs, side → Back).
-**Why.** Matches how the parent and the doctor talk about it, and keeps per-area counts meaningful.
-**Trade-off.** Can't see whether one arm is worse than the other.
+**Decision.** The questionnaire asks the parent to define their own area list. The default is seven categories: Arms, Legs, Stomach, Back, Neck, Face, Diaper. Sub-areas roll up to a parent category via aliases (shoulders → Arms, ankles → Legs). No automatic left/right split — if a family needs that granularity, they define "Left arm" and "Right arm" as separate areas.
+**Why.** Named categories keep per-area counts meaningful and comparable week to week, without locking every family into one anatomy.
+**Trade-off.** Areas must be decided at setup; renaming one later would break historical counts.
 
-### 4. "Full body" means arms, legs, stomach, back and neck
+### 4. "Full body" is defined by the family, not hardcoded
 
-**Decision.** A full-body application counts once for each of those five areas. Face and diaper area are always logged separately.
-**Why.** Face and diaper skin are treated with different products and limits, so folding them into "full body" would hide them.
+**Decision.** The questionnaire asks which of the family's tracked areas "full body" covers. The default suggestion is every area except those in the sensitive-skin set (face, diaper, scalp, groin). A full-body log entry counts once for each area it covers; the rest are always tracked separately.
+**Why.** Face and diaper skin are typically treated with different products and limits — folding them into "full body" would hide overuse. But which areas make up "full body" differs by family, so it belongs in the profile, not the code.
 
 ### 5. Weekly steroid load = average applications per *treated* area
 
