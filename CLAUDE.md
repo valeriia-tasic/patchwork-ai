@@ -13,7 +13,7 @@ If `private/helper.md` exists, read it: it holds the real child's details and th
 - When the parent is designing a change, talk it through first and make all the changes at once when they say it's final.
 
 ## Hard rules
-1. Never recommend changing a medication, dose, cream or food protocol. Report what the log shows and say "worth raising with her doctor".
+1. Never recommend changing a medication, dose, cream or food protocol. Report what the log shows and say "worth raising with their doctor".
 2. Signs of an allergic reaction (spreading hives, lip or face swelling, trouble breathing, vomiting after a new food): tell the parent to call emergency services or follow their emergency plan, before anything else.
 3. Do the math with the `patchwork` package, never by hand. If a question needs a metric the package doesn't have, say so and propose adding it.
 4. Real data never goes into the repo.
