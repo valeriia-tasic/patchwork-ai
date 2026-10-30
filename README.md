@@ -86,11 +86,6 @@ All limits are the parent's own, set once during the first-use questionnaire bas
 
 **Weekly report (Emailed directly to your inbox with summary and visuals)**
 
-<p align="center">
-  <img src="docs/weekly-email.png" alt="The Sunday report email" width="300"><br>
-  <em>The log page in a phone browser, and the Sunday report as it lands in the inbox.<br>All screenshots use a synthetic log for a fictional toddler.</em>
-</p> 
-
 - Each medicine: total days, Morning / Night split if used; for creams used on several areas, average applications per treated area, most-affected areas, any area over the limit
 - Antihistamine: total days, average gap between doses
 - Flares and notes; allergen exposures with amounts
@@ -172,14 +167,14 @@ Changed the default profile? Run `python -m patchwork page --profile rules.json`
 
 ## Results
 
-I have been personally using and tracking my daughter's stats for the last 10 weeks, and I can confidently say it has decreased my nightly routine stress by a lot. Instead of trying to calculate when the cream was last used, whether it's being used more than before, or whether to try the antihistamine instead — I open one page and make a choice in seconds, not the long and dreadful minutes of trying to remember ahead of time while dealing with a crying toddler.
+10 weeks in production. 3 alerts fired — every one of them meaningful.
 
-No more anxiety about staying within doctor's guidelines. I can now clearly see that my daughter has dramatically improved and requires far less medical intervention than she did months ago.
+The alerts that fired tell the story of what this is actually for:
 
-This has been personally tested, updated, and continuously improved to make bedtime a little easier for any parent managing a child's medical routine.
+- **Antihistamine creep during sleep training.** As nights got harder, antihistamine use quietly crept up. Patchwork flagged it before it drifted outside the doctor's guidelines — something I would not have caught on my own.
+- **Steroid use spiked the week temperatures dropped.** Comparing that week against the warmer weeks before made the pattern undeniable: cold affects her skin. That's a conclusion I can now bring to an appointment with data behind it.
 
-## What's next
+Logging takes seconds: body areas are preset, the date defaults to today, and most entries are a single tap.
+Eczema is a chronic condition — we're far from the finish line. What this gives me is confidence at 7pm: I open one page, make a call in seconds, and know I'm staying within the limits her doctor set. The weekly report surfaces patterns that are easy to explain and easy to act on.
 
-- Doctor-ready monthly PDF summary
-- Second caregiver logging from their own phone
-- Correlating flares with food introductions
+This has been personally tested, updated, and continuously improved to make one small part of a hard situation a little more manageable.
