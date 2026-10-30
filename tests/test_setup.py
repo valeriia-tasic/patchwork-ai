@@ -15,7 +15,6 @@ def answers(*replies):
 def test_new_family_with_two_creams_and_allergens():
     p = setup.run(answers(
         "Arms, Legs, Torso, Face",          # areas
-        "n",                                 # left/right separately
         "elbows=Arms, ankles=Legs, tail=X",  # sub-areas (last one ignored)
         "",                                  # full body -> suggested (all but Face)
         "Hydrocortisone", "any", "d", "3", "",   # cream 1: any area, daily, 3/area/week, no total
@@ -39,7 +38,7 @@ def test_new_family_with_two_creams_and_allergens():
 def test_questionnaire_reproduces_the_original_setup():
     """Answering as the first family did must rebuild the rules Patchwork was designed with."""
     p = setup.run(answers(
-        "", "n",
+        "",
         "shoulders=Arms, side=Back, ankles=Legs",
         "Arms, Legs, Stomach, Back, Neck",
         "Steroid", "any", "d", "2", "",
@@ -59,16 +58,6 @@ def test_questionnaire_reproduces_the_original_setup():
     log = [Entry("steroid", date(2026, 10, d), ("Arms",)) for d in (20, 22, 24)]
     assert [a.headline for a in alerts.check_creams(log, prof, date(2026, 10, 25))] == ["Arms Steroid 3x this week"]
 
-
-def test_left_right_follow_up_asks_again():
-    said = []
-    p = setup.run(answers(
-        "Arms, Legs", "y", "Left arm, Right arm, Legs", "n", "", "",
-        "Steroid", "", "", "", "", "",
-        "n", "n", "", "", "", "",
-    ), say=said.append)
-    assert p["areas"]["tracked"] == ["Left arm", "Right arm", "Legs"]
-    assert any("Left arm" in s for s in said)
 
 
 def test_limits_are_framed_as_the_parents_thresholds():

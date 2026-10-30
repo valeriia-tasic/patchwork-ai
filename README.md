@@ -97,7 +97,7 @@ All limits are the parent's own, set once during the first-use questionnaire bas
 
 Clone the repo and open it in Claude Code: if there's no profile yet, Claude walks you through [`SETUP.md`](SETUP.md) conversationally. No Claude? `python -m patchwork init` asks the same questions in the terminal.
 
-1. **Body areas**, with follow-ups: left/right? which spots roll up into which area (elbows → Arms)?
+1. **Body areas**, with follow-ups: which spots roll up into which area (elbows → Arms)?
 2. **Full body**: which areas it covers; the rest are always tracked on their own
 3. **Creams**: name, where it's used, date-only or Morning / Night, per-area and total weekly limits
 4. **Antihistamine**: brand and how often is too often

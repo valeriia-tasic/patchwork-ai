@@ -61,12 +61,7 @@ def run(ask: Ask, say: Callable[[str], None] = print) -> dict:
     say("Patchwork setup. Press Enter to accept the value in [brackets].\n")
 
     # 1. Body areas, with follow-ups to get the scope right
-    while True:
-        areas = _split(ask(f"Which body areas do you track? [{', '.join(DEFAULT_AREAS)}] ")) or DEFAULT_AREAS
-        if _yes(ask("Do you need left and right tracked separately (e.g. left arm vs right arm)? [n] ")):
-            say("Then list each side as its own area, e.g. 'Left arm, Right arm'.")
-            continue
-        break
+    areas = _split(ask(f"Which body areas do you track? [{', '.join(DEFAULT_AREAS)}] ")) or DEFAULT_AREAS
     say("Some spots belong under a main area, e.g. elbows -> Arms, ankles -> Legs.")
     aliases: dict[str, str] = {}
     for pair in _split(ask("Anything else you log that belongs under one of these? (e.g. elbows=Arms, ankles=Legs) [skip] ")):

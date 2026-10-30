@@ -21,7 +21,7 @@ Short records of product and technical choices: what we decided, why, and what w
 ### 3. Body areas are seven fixed categories
 
 **Context.** Free-text areas ("shoulders", "small side", "dots on thumbs") made counts impossible to compare.
-**Decision.** Seven categories: Arms, Legs, Stomach, Back, Neck, Face, Diaper. Sub-areas roll up (shoulders → Arms, ankles → Legs, side → Back). No left/right split.
+**Decision.** Seven categories: Arms, Legs, Stomach, Back, Neck, Face, Diaper. Sub-areas roll up (shoulders → Arms, ankles → Legs, side → Back).
 **Why.** Matches how the parent and the doctor talk about it, and keeps per-area counts meaningful.
 **Trade-off.** Can't see whether one arm is worse than the other.
 
