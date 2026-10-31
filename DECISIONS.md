@@ -1,6 +1,8 @@
 # Decisions
 
-Short records of product and technical choices: what we decided, why, and what we gave up.
+This is a product and technical decision log — closer to a lightweight PRD than a rules file. It documents what was built, why, and what was deliberately left out. It is written for humans: engineers reading the code, collaborators onboarding to the project, or the author revisiting a choice months later.
+
+**Agents do not read this file.** Rules, limits, and alert logic live in the Python package and the family's profile. This document explains the reasoning behind those choices — it does not drive any runtime behavior.
 
 ---
 
@@ -11,31 +13,35 @@ Short records of product and technical choices: what we decided, why, and what w
 **Why.** A report shown to a doctor must be correct and identical for identical input. Model-written counting was usually right; charts drifted between runs.
 **Trade-off.** Less flexibility: a new metric now needs code and a test instead of a prompt edit.
 
-### 2. One tap, two at most
+### 2. Preset areas and medications - simplicity in day to day logging
 
-**Context.** The log is filled in during bedtime with a toddler in one arm.
-**Decision.** Five big buttons. Steroid and face cream are date-only (today by default); the face cream button preselects its only area.
+**Context.** The log is filled in during bedtime with a toddler in one arm. When a parent needs to input the data, they need to be quick but percise. 
+**Decision.** Five big buttons (default) determined by the original questionnaire tailored to each parent.Date are pre selected to a current date/time and you only need one to two clicks to record. 
 **Why.** Every extra field is an entry that doesn't get logged. Time of day added nothing for these treatments.
-**Trade-off.** No time-of-day analysis for creams.
+**Trade-off.** Sometimes without detiled context some smaller areas are grouped under larger ubmbrella (ex: Wrists under arm) which can lead to additional triggers in the system if the parent choses to apply medical creams into smaller area but count the entire body part for tracking. However, simplicity of the process asks for parts to be grouped accordingly. If there's a specific area that needs separate attention (ex: Diaper, neck) it can be addd as part of the questionnaire. 
 
 ### 3. Body areas are named categories, not free text
 
-**Context.** Free-text areas ("shoulders", "small side", "dots on thumbs") made counts impossible to compare.
+**Context.** Free-text areas ("shoulders", "small side", etc) made counts impossible to compare — the same body part logged differently across days can't be aggregated. Free text also increases input time, which at bedtime means entries that don't get logged.
 **Decision.** The questionnaire asks the parent to define their own area list. The default is seven categories: Arms, Legs, Stomach, Back, Neck, Face, Diaper. Sub-areas roll up to a parent category via aliases (shoulders → Arms, ankles → Legs). No automatic left/right split — if a family needs that granularity, they define "Left arm" and "Right arm" as separate areas.
 **Why.** Named categories keep per-area counts meaningful and comparable week to week, without locking every family into one anatomy.
-**Trade-off.** Areas must be decided at setup; renaming one later would break historical counts.
+**Trade-off.** Areas must be decided at setup; renaming one later would break historical counts, as entries store the area name as logged and are matched against the current profile at read time.
+**Risk accepted.** Accepted risk for MVP. A good post-MVP improvement would be to support free-text aliases and backfill category changes across historical data.
 
 ### 4. "Full body" is defined by the family, not hardcoded
 
+**Context.** Parents often apply a cream to the whole body in one go and logging each area separately at that moment is impractical. At the same time, not every area should be treated as interchangeable — sensitive areas like face and diaper have different products and tighter limits.
 **Decision.** The questionnaire asks which of the family's tracked areas "full body" covers. The default suggestion is every area except those in the sensitive-skin set (face, diaper, scalp, groin). A full-body log entry counts once for each area it covers; the rest are always tracked separately.
 **Why.** Face and diaper skin are typically treated with different products and limits — folding them into "full body" would hide overuse. But which areas make up "full body" differs by family, so it belongs in the profile, not the code.
+**Trade-off.** A family that skips defining "full body" or sets it up incorrectly may unintentionally under-count applications — logging "full body" when only some areas were treated, or missing sensitive areas that should have been tracked separately. The questionnaire mitigates this, but the correctness of the counts depends on the setup being accurate.
+**Risk accepted.** Accepted for MVP. Two post-MVP improvements worth prioritising: (1) a guided confirmation step at the end of the questionnaire that shows exactly which areas "full body" will count toward, so misconfig is caught before any data is logged; (2) a backfill tool that allows a parent to correct their full body definition and re-expand historical entries against the updated profile.
 
 ### 5. Weekly steroid load = average applications per *treated* area
 
-**Context.** Counting "days steroid was used" called a week with Legs ×2 and Arms ×1 a "3", even though no area got more than 2.
+**Context.** A parent wants to know if they're over-treating a specific area — not just how many times the steroid was used in total. Counting total days misses the point: a week where steroid went on Legs twice and Arms once scores "3", even though neither area was hit more than twice. That number doesn't reflect what actually happened to any one patch of skin.
 **Decision.** Sum the per-area counts and divide by the number of areas treated that week (Legs 2 + Arms 1 → 1.5).
-**Why.** Answers the real question, "how hard is each affected area being hit?" Dividing by all seven areas would let untreated areas dilute a bad week.
-**Trade-off.** An average can hide a single hot spot. That's why the per-area "more than 2 in a week" alert stays, next to the average.
+**Why.** Answers the real question: how hard is each affected area being hit? Dividing by all tracked areas would let untreated areas dilute a genuinely heavy week.
+**Trade-off.** An average can hide a single hot spot — one area used 4 times can sit behind a low average if others were mild. That's why the per-area alert stays alongside the average: the average tells the story of the week, the per-area alert catches the outlier.
 
 ### 6. Silent by default
 
@@ -64,12 +70,6 @@ Short records of product and technical choices: what we decided, why, and what w
 **Decision.** A profile lists the family's creams (name, where used, schedule, limits), their antihistamine brand and limit, and whether to track allergens. A first-use questionnaire writes it; a validator checks it; the page, alerts and report are generated from it.
 **Why.** Every family's treatment plan is different, and the code shouldn't change when a cream does.
 **Trade-off.** Scope stays deliberately narrow: topical creams, one antihistamine, flares, allergen exposure. Oral steroids, injections and dosing schedules are out.
-
-### 11. Creams are once a day; Morning / Night records when, not how many
-
-**Decision.** Each cream is set to date-only or Morning / Night. Limits count days, so a morning and a night entry on the same area and day count once.
-**Why.** The creams this was built around are applied at most once a day; the slot answers "when", which matters for some creams, without inflating counts.
-**Trade-off.** A twice-daily cream would need application counting; not supported.
 
 ### 12. Allergen exposure: one tap for the common nine
 
