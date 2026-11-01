@@ -44,7 +44,7 @@ This is a product and technical decision log — closer to a lightweight PRD tha
 
 **Context.** Parents often apply a cream to the whole body in one go, and logging each area separately at that moment is impractical. At the same time, not every area should be treated as interchangeable — sensitive areas like face and diaper have different products and tighter limits.
 
-**Decision.** The questionnaire asks which of the family's tracked areas "full body" covers. The default suggestion is every area except those in the sensitive-skin set (face, diaper, scalp, groin). A full-body log entry counts once for each area it covers; the rest are always tracked separately.
+**Decision.** The questionnaire asks which of the family's tracked areas "full body" covers. The default suggestion is every area except those in the sensitive-skin set (face, diaper, scalp). A full-body log entry counts once for each area it covers; the rest are always tracked separately.
 
 **Why.** Face and diaper skin are typically treated with different products and limits — folding them into "full body" would hide overuse. But which areas make up "full body" differs by family, so it belongs in the profile, not the code.
 

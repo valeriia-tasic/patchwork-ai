@@ -26,7 +26,11 @@ def test_new_family_with_two_creams_and_allergens():
     ), say=lambda s: None)
     assert validate(p) == []
     assert p["areas"]["full_body"]["covers"] == ["Arms", "Legs", "Torso"]
-    assert p["areas"]["aliases"] == {"elbows": "Arms", "ankles": "Legs"}
+    aliases = p["areas"]["aliases"]
+    assert aliases["elbows"] == "Arms" and aliases["ankles"] == "Legs"   # parent-entered
+    assert aliases["elbow"] == "Arms" and aliases["shin"] == "Legs"      # defaults included
+    assert "tail" not in aliases                                          # invalid entry dropped
+    assert "side" not in aliases                                          # Back not in this family's areas
     hc, pr = p["creams"]
     assert hc == {**hc, "id": "hydrocortisone", "areas": "any", "schedule": "daily",
                   "limits": {"max_days_per_area_per_week": 3, "max_days_per_week": None}}

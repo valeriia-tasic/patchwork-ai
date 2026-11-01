@@ -21,7 +21,16 @@ Ask = Callable[[str], str]
 
 COMMON_ALLERGENS = ["Milk", "Egg", "Fish", "Shellfish", "Tree nuts", "Peanut", "Wheat", "Soy", "Sesame"]
 DEFAULT_AREAS = ["Arms", "Legs", "Stomach", "Back", "Neck", "Face", "Diaper"]
-DEFAULT_SEPARATE = {"face", "diaper", "scalp", "groin"}
+DEFAULT_SEPARATE = {"face", "diaper", "scalp"}
+DEFAULT_ALIASES: dict[str, str] = {
+    "ankle": "Legs", "ankles": "Legs", "foot": "Legs", "feet": "Legs",
+    "knee": "Legs", "knees": "Legs", "thigh": "Legs", "thighs": "Legs",
+    "shin": "Legs", "shins": "Legs",
+    "elbow": "Arms", "elbows": "Arms", "hand": "Arms", "hands": "Arms",
+    "wrist": "Arms", "wrists": "Arms", "thumb": "Arms", "thumbs": "Arms",
+    "finger": "Arms", "fingers": "Arms", "shoulder": "Arms", "shoulders": "Arms",
+    "side": "Back",
+}
 AREA_COLORS = ["#e6194b", "#3cb44b", "#ffb000", "#4363d8", "#f032e6", "#00b8d4", "#ff6f00",
                "#911eb4", "#469990", "#9a6324"]
 
@@ -63,7 +72,8 @@ def run(ask: Ask, say: Callable[[str], None] = print) -> dict:
     # 1. Body areas, with follow-ups to get the scope right
     areas = _split(ask(f"Which body areas do you track? [{', '.join(DEFAULT_AREAS)}] ")) or DEFAULT_AREAS
     say("Some spots belong under a main area, e.g. elbows -> Arms, ankles -> Legs.")
-    aliases: dict[str, str] = {}
+    area_set = {a.lower() for a in areas}
+    aliases: dict[str, str] = {k: v for k, v in DEFAULT_ALIASES.items() if v.lower() in area_set}
     for pair in _split(ask("Anything else you log that belongs under one of these? (e.g. elbows=Arms, ankles=Legs) [skip] ")):
         if "=" in pair:
             k, v = (x.strip() for x in pair.split("=", 1))

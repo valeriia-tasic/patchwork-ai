@@ -18,11 +18,11 @@ asks the same questions; both write the same file.
 - "Which body areas do you track?" Default: Arms, Legs, Stomach, Back, Neck, Face, Diaper.
 - Follow-ups to get the scope right:
   - "Do you need left and right separately?" If yes, list each side as its own area ("Left arm", "Right arm").
-  - "Is there anything you'd log that belongs under one of these — elbows, ankles, shoulders?" Record each as an alias (`"elbows": "Arms"`).
+  - "Smaller spots like elbows or ankles are automatically grouped under their broader area — so 'elbows' counts under Arms. Do you want to track any of them separately as their own area instead?" Record spots that stay grouped as aliases (`"elbows": "Arms"`); spots the parent wants separate become their own area.
   - If an area seems very broad (e.g. "Body") or very narrow (e.g. "Left thumb"), ask whether that's the level they want to count at.
 
 **2. Full body**
-- "When you log 'full body', which of your areas does that cover?" Suggest every area except face, diaper, scalp and groin. Confirm the areas that stay separate.
+- "When you log 'full body', which of your areas does that cover?" Suggest every area except face, diaper and scalp. Confirm the areas that stay separate.
 
 **3. Creams** — repeat for each cream (up to 6)
 - "What's the cream called?"
