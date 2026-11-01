@@ -8,9 +8,16 @@ asks the same questions; both write the same file.
 
 - Ask **one topic at a time**, in plain language, and wait for the answer. Offer the default in brackets.
 - Reflect back what you heard before moving on when an answer is ambiguous.
-- Never suggest a medication, dose or limit. Limits are the parent's own alert thresholds from their doctor. Say this once, before the first limit question:
-  > "Limits are alert thresholds you set from your doctor's instructions. Patchwork doesn't recommend limits; it only tells you when one is crossed."
+- Never suggest a medication, dose or limit. All limits come from the parent's doctor.
 - Keep everything you hear in `private/`. Nothing from setup goes into a tracked file.
+
+## Limits
+
+Limits are handled as a dedicated step within each relevant section (creams, antihistamine). Before asking any limit question, say:
+
+> "Limits are alert thresholds from your doctor's instructions — Patchwork will notify you when one is crossed. They are completely optional: if you don't set a limit, Patchwork won't alert for that item since it has nothing to compare against. You can always add or update a limit later."
+
+Then ask the limit question(s) for that item. If the parent skips (blank answer), record `null` — no alert will fire.
 
 ## The questions
 
@@ -26,15 +33,17 @@ asks the same questions; both write the same file.
 
 **3. Creams** — repeat for each cream (up to 6)
 - "What's the cream called?"
-- "Is it used on any area, or only on some?" (e.g. a face cream → Face only)
-- "Do you log it once a day by date, or as Morning / Night?" Every cream is at most once a day; Morning / Night records *when*, it doesn't double the count.
-- If used on more than one area: "Should I alert you when one area gets it on more than N days in a week? What's N?" (blank = no alert)
-- "Should I alert you when it's used on more than N days a week in total?" (blank = no alert)
-- "Is there routine use you *don't* want logged — e.g. a daily body moisturiser?" Note it in `private/helper.md`, not the profile.
+- "Do you apply this ointment to a specific area, or anywhere it's needed?" (e.g. face only → Face)
+- "Do you apply this at a fixed time each day, or do you need to track morning and night separately?" If they track both times: log as Morning / Night. If once a day at a consistent time: log by date. Either way, it counts as at most once a day.
+- "Is there anything you apply regularly that you don't want tracked in Patchwork?" Note it in `private/helper.md`, not the profile.
+- **Limits** (say the limits preamble, then ask):
+  - If used on more than one area: "How many days in a week on one area before I alert you?" (blank = no alert)
+  - "How many days in a week total before I alert you?" (blank = no alert)
 
 **4. Antihistamine**
 - "Do you give an antihistamine? What brand?" (e.g. Zyrtec, Claritin)
-- "Alert me when it's given more than how many times within how many days?" Default 1 in 3.
+- **Limit** (say the limits preamble, then ask):
+  - "How many times given within how many days before I alert you?" (blank = no alert)
 
 **5. Allergen exposure**
 - "Do you want to log allergen exposure — food introductions or accidental contact?"

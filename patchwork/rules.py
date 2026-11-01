@@ -50,8 +50,8 @@ class Profile:
     creams: tuple[Cream, ...]
     antihistamine_enabled: bool
     antihistamine_brand: str
-    antihistamine_max_doses: int
-    antihistamine_window_days: int
+    antihistamine_max_doses: int | None
+    antihistamine_window_days: int | None
     antihistamine_color: str
     track_allergens: bool
     allergens: tuple[str, ...]
@@ -129,8 +129,8 @@ def profile_from_dict(raw: dict) -> Profile:
         creams=tuple(creams),
         antihistamine_enabled=bool(ah.get("enabled", True)),
         antihistamine_brand=ah.get("brand") or "Antihistamine",
-        antihistamine_max_doses=int((ah.get("limit") or {}).get("max_doses", 1)),
-        antihistamine_window_days=int((ah.get("limit") or {}).get("window_days", 3)),
+        antihistamine_max_doses=_int_or_none((ah.get("limit") or {}).get("max_doses")),
+        antihistamine_window_days=_int_or_none((ah.get("limit") or {}).get("window_days")),
         antihistamine_color=ah.get("color", "#6a4fb3"),
         track_allergens=bool(al.get("track", False)),
         allergens=tuple(al.get("list", [])),

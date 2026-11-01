@@ -26,6 +26,8 @@ def check_antihistamine(entries: list[Entry], p: Profile, today: date) -> Alert 
     if not p.antihistamine_enabled:
         return None
     span, limit = p.antihistamine_window_days, p.antihistamine_max_doses
+    if limit is None or span is None:
+        return None
     recent = sorted(m.days_of(entries, "anti", m.Window(today - timedelta(days=span - 1), today)))
     if len(recent) <= limit:
         return None

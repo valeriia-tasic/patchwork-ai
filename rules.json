@@ -30,7 +30,7 @@
       "name": "Steroid",
       "schedule": "daily",
       "areas": "any",
-      "limits": {"max_days_per_area_per_week": 2, "max_days_per_week": null},
+      "limits": {"max_days_per_area_per_week": null, "max_days_per_week": null},
       "color": "#b26a12"
     },
     {
@@ -46,7 +46,7 @@
   "antihistamine": {
     "enabled": true,
     "brand": "Antihistamine",
-    "limit": {"max_doses": 1, "window_days": 3},
+    "limit": {"max_doses": null, "window_days": null},
     "color": "#6a4fb3"
   },
 

@@ -6,9 +6,27 @@ This is a product and technical decision log — closer to a lightweight PRD tha
 
 ---
 
-## Primary decisions 
+## Primary decisions
 
-### 1. Deterministic code does the math; the LLM operates the system
+### 1. Patchwork carries no medical responsibility — the parent defines everything
+
+**Decision.** Patchwork never makes medical assumptions, suggests timing, doses, limits, or treatment routines. Every piece of information — what cream is used, when it is applied (morning / night), alert limits, what counts as a flare, which allergens to track — is explicitly provided by the parent and recorded in the profile. Patchwork logs what the parent tells it, counts it, and reports it. Nothing more.
+
+**Why.** This is a child's health. Any assumption the system makes could be wrong and harmful. All medical decisions, including what limits to set, come from the family's doctor and are entered by the parent. Patchwork surfaces the data; the parent and doctor interpret it.
+
+**In practice.**
+- The questionnaire asks, never suggests, what is correct for this family.
+- Limits are collected with an explicit note: "These are thresholds you set from your doctor's instructions."
+- Patchwork does not recommend when or how to apply anything.
+- If a threshold is crossed, Patchwork reports it and says "worth raising with their doctor." It never says what to do.
+
+**Checked against.**
+- `CLAUDE.md` hard rules 1 and 2.
+- `SETUP.md`: all questions are neutral — no defaults imply a medical norm.
+- `patchwork/setup.py`: `LIMIT_NOTE` is shown before every limit question.
+- `patchwork/alerts.py`, `patchwork/report.py`: output is factual counts and thresholds only.
+
+### 2. Deterministic code does the math; the LLM operates the system
 
 **Context.** The first version asked the agent to read the log, count, and draw charts on every run.
 
@@ -18,7 +36,7 @@ This is a product and technical decision log — closer to a lightweight PRD tha
 
 **Trade-off.** Less flexibility: a new metric now needs code and a test instead of a prompt edit.
 
-### 2. Preset areas and medications - simplicity in day to day logging
+### 3. Preset areas and medications - simplicity in day to day logging
 
 **Context.** The log is filled in during bedtime with a toddler in one arm. When a parent needs to input data, they need to be quick but precise.
 
@@ -28,7 +46,7 @@ This is a product and technical decision log — closer to a lightweight PRD tha
 
 **Trade-off.** Without detailed context, smaller areas are grouped under a larger umbrella (ex: Wrists under Arms), which can lead to additional triggers if the parent applies a cream to a smaller area but the full body part is counted for tracking. Simplicity takes priority. If a specific area needs separate attention (ex: Diaper, Neck) it can be added during the questionnaire.
 
-### 3. Body areas are named categories, not free text
+### 4. Body areas are named categories, not free text
 
 **Context.** Free-text areas ("shoulders", "small side", etc.) made counts impossible to compare — the same body part logged differently across days can't be aggregated. Free text also increases input time, which at bedtime means entries that don't get logged.
 
@@ -40,7 +58,7 @@ This is a product and technical decision log — closer to a lightweight PRD tha
 
 **Risk accepted.** Accepted risk for MVP. A good post-MVP improvement would be to support free-text aliases and backfill category changes across historical data.
 
-### 4. "Full body" is defined by the family, not hardcoded
+### 5. "Full body" is defined by the family, not hardcoded
 
 **Context.** Parents often apply a cream to the whole body in one go, and logging each area separately at that moment is impractical. At the same time, not every area should be treated as interchangeable — sensitive areas like face and diaper have different products and tighter limits.
 
@@ -52,7 +70,7 @@ This is a product and technical decision log — closer to a lightweight PRD tha
 
 **Risk accepted.** Accepted for MVP. Two post-MVP improvements worth prioritising: (1) a guided confirmation step at the end of the questionnaire that shows exactly which areas "full body" will count toward, so misconfig is caught before any data is logged; (2) a backfill tool that allows a parent to correct their full body definition and re-expand historical entries against the updated profile.
 
-### 5. Weekly steroid load = average applications per *treated* area
+### 6. Weekly steroid load = average applications per *treated* area
 
 **Context.** A parent wants to know if they're over-treating a specific area — not just how many times the steroid was used in total. Counting total days misses the point: a week where steroid went on Legs twice and Arms once scores "3", even though neither area was hit more than twice. That number doesn't reflect what actually happened to any one patch of skin.
 
@@ -64,28 +82,28 @@ This is a product and technical decision log — closer to a lightweight PRD tha
 
 ## Smaller decisions 
 
-### 6. Silent by default
+### 7. Silent by default
 
 **Decision.** The nightly agent sends nothing on a quiet night. Alerts are bundled into one push that starts with the most important item.
 **Why.** An alert every night is an alert nobody reads.
 
-### 7. Small multiples instead of one crowded chart
+### 8. Small multiples instead of one crowded chart
 
 **Context.** Seven area lines on one chart crossed constantly and couldn't be labelled.
 **Decision.** One mini chart per area on a shared scale, with each area's 12-week average as a grey dashed line and a rising/falling tag.
 **Why.** You can read each area at a glance and still compare heights.
 
-### 8. Rolling 12-week average, not "since the start"
+### 9. Rolling 12-week average, not "since the start"
 
 **Decision.** The grey baseline is the last 12 weeks; if the log is younger, it averages over the weeks logged.
 **Why.** "Since the start" gets slower to reflect change every month. Twelve weeks means "her normal lately".
 
-### 9. Real data never enters the repo
+### 10. Real data never enters the repo
 
 **Decision.** Publish the production code with synthetic data. Real entries, profile and links live in a git-ignored `private/` folder and in the hosted log. A test scans published files for emails, private links and a local denylist.
 **Why.** One codebase for the portfolio and for real use, with no way to leak a child's health data by accident.
 
-### 10. Treatments are data, set up by a questionnaire
+### 11. Treatments are data, set up by a questionnaire
 
 **Context.** The first version hard-coded one family's three treatments.
 **Decision.** A profile lists the family's creams (name, where used, schedule, limits), their antihistamine brand and limit, and whether to track allergens. A first-use questionnaire writes it; a validator checks it; the page, alerts and report are generated from it.
@@ -94,12 +112,12 @@ This is a product and technical decision log — closer to a lightweight PRD tha
 
 **Post-MVP.** Expanding to other medication types — oral steroids, biologics, dosing schedules — is the natural next step as the profile system is already built to be data-driven. Each would need its own tracking model (doses, not days; weight-based limits, etc.) and is scoped out until the core use case is validated.
 
-### 11. Allergen exposure: one tap for the common nine
+### 12. Allergen exposure: one tap for the common nine
 
 **Decision.** If tracked, the page shows buttons for the 9 major allergens plus "Other", with a free-text amount. Exposures appear in the weekly report and as context on nightly alerts; they never trigger an alert on their own.
 **Why.** Introductions are planned and logged in a hurry; buttons beat typing. Showing exposures next to flares lets the parent and doctor judge timing.
 
-### 12. Old entries keep working
+### 13. Old entries keep working
 
 **Decision.** A cream's id is its entry type, so entries logged before profiles existed ("steroid", "taci") are already valid. Missing fields (no slot, no time) are treated as "once that day".
 **Why.** Months of history shouldn't need a migration to survive a model change.

@@ -127,9 +127,9 @@ def run(ask: Ask, say: Callable[[str], None] = print) -> dict:
     if uses:
         anti["brand"] = ask("  Brand name (e.g. Zyrtec, Claritin) [Antihistamine]: ").strip() or "Antihistamine"
         say("  " + LIMIT_NOTE)
-        n = ask("  Alert when it's given more than how many times... [1] ").strip()
-        w = ask("  ...within how many days? [3] ").strip()
-        anti["limit"] = {"max_doses": int(n) if n.isdigit() else 1, "window_days": int(w) if w.isdigit() else 3}
+        n = ask("  Alert when it's given more than how many times within a window? (blank = no alert) ").strip()
+        w = ask("  ...within how many days? ").strip() if n.isdigit() else ""
+        anti["limit"] = {"max_doses": int(n) if n.isdigit() else None, "window_days": int(w) if w.isdigit() else None}
 
     # 5. Allergen exposure
     track = _yes(ask("\nDo you want to log allergen exposure (food introductions, accidental contact)? [n] "))
