@@ -29,14 +29,18 @@ class Entry:
     amount: str = ""      # allergen entries
 
 
-def _to_entry(raw: dict) -> Entry | None:
-    body = raw["data"] if isinstance(raw.get("data"), dict) else raw
+def _to_entry(raw_record: dict) -> Entry | None:
+    """Parse one raw JSON object into an Entry, returning None if the record is invalid.
+
+    Used by load_entries to silently skip malformed or incomplete log records.
+    """
+    body = raw_record["data"] if isinstance(raw_record.get("data"), dict) else raw_record
     kind = str(body.get("type", "")).strip()
     day = body.get("day")
     if not kind or not day:
         return None
     try:
-        parsed = date.fromisoformat(str(day))
+        parsed_day = date.fromisoformat(str(day))
     except ValueError:
         return None
     areas = body.get("areas") or []
@@ -45,8 +49,8 @@ def _to_entry(raw: dict) -> Entry | None:
     slot = str(body.get("slot") or "").lower()
     return Entry(
         type=kind,
-        day=parsed,
-        areas=tuple(str(a) for a in areas),
+        day=parsed_day,
+        areas=tuple(str(area) for area in areas),
         note=str(body.get("note") or ""),
         at=str(body.get("at") or ""),
         slot=slot if slot in ("morning", "night") else "",
@@ -56,11 +60,18 @@ def _to_entry(raw: dict) -> Entry | None:
 
 
 def load_entries(path: str | Path) -> list[Entry]:
-    p = Path(path)
-    if p.is_dir():
-        raws = [json.loads(f.read_text()) for f in sorted(p.rglob("*.json"))]
+    """Load all log entries from a file or directory, sorted by day then time.
+
+    Accepts a JSON list, a {"entries": [...]} wrapper, or a directory of per-entry
+    JSON files (the Claude artifact database export format). Invalid records are
+    dropped silently.
+    Used by every patchwork command that processes the log: weekly, nightly, sample.
+    """
+    source = Path(path)
+    if source.is_dir():
+        raw_records = [json.loads(file.read_text()) for file in sorted(source.rglob("*.json"))]
     else:
-        loaded = json.loads(p.read_text())
-        raws = loaded.get("entries", []) if isinstance(loaded, dict) else loaded
-    entries = [e for e in (_to_entry(r) for r in raws) if e is not None]
-    return sorted(entries, key=lambda e: (e.day, e.at))
+        loaded = json.loads(source.read_text())
+        raw_records = loaded.get("entries", []) if isinstance(loaded, dict) else loaded
+    entries = [entry for entry in (_to_entry(record) for record in raw_records) if entry is not None]
+    return sorted(entries, key=lambda entry: (entry.day, entry.at))

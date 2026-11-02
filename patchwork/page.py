@@ -19,27 +19,44 @@ PAGE_KEYS = ("areas", "creams", "antihistamine", "allergens", "averages")
 
 
 def page_profile(raw: dict) -> dict:
-    return {k: raw[k] for k in PAGE_KEYS if k in raw}
+    """Extract only the keys the page needs from a full profile dict.
+
+    Keeps areas, creams, antihistamine, allergens, and averages; strips delivery
+    settings (email, timezone, log_url) so they never appear in the public page.
+    Used by build to produce the JSON blob embedded in index.html.
+    """
+    return {key: raw[key] for key in PAGE_KEYS if key in raw}
 
 
 def embedded(text: str) -> dict | None:
-    m = BLOCK.search(text)
-    return json.loads(m.group(2)) if m else None
+    """Parse and return the PROFILE object currently embedded in an index.html string.
+
+    Returns None when no PROFILE block is found. Used in tests to verify that build
+    round-trips the profile correctly.
+    """
+    block_match = BLOCK.search(text)
+    return json.loads(block_match.group(2)) if block_match else None
 
 
 def build(profile_path: str | Path | None = None, out: str | Path | None = None) -> Path:
-    """Default profile -> refresh web/index.html. Private profile -> private/dist/index.html."""
-    src = Path(profile_path) if profile_path else (PRIVATE_PROFILE if PRIVATE_PROFILE.exists() else DEFAULT_PROFILE)
-    raw = unwrap(json.loads(src.read_text()))
+    """Embed the active profile into the log page template and write it to disk.
+
+    Default profile → refreshes web/index.html in place.
+    Private profile → writes to private/dist/index.html to keep family config out
+    of the public repo.
+    Called by cmd_page after the parent runs `python -m patchwork page`.
+    """
+    source_path = Path(profile_path) if profile_path else (PRIVATE_PROFILE if PRIVATE_PROFILE.exists() else DEFAULT_PROFILE)
+    raw = unwrap(json.loads(source_path.read_text()))
     problems = validate(raw)
     if problems:
         raise ValueError("Profile is not valid:\n- " + "\n- ".join(problems))
-    is_default = src.resolve() == DEFAULT_PROFILE.resolve()
+    is_default = source_path.resolve() == DEFAULT_PROFILE.resolve()
     target = Path(out) if out else (TEMPLATE if is_default else ROOT / "private" / "dist" / "index.html")
-    text = TEMPLATE.read_text()
-    if not BLOCK.search(text):
+    template_text = TEMPLATE.read_text()
+    if not BLOCK.search(template_text):
         raise ValueError("PROFILE block not found in web/index.html")
-    blob = json.dumps(page_profile(raw), separators=(",", ":"), ensure_ascii=False).replace("</", "<\\/")
+    profile_blob = json.dumps(page_profile(raw), separators=(",", ":"), ensure_ascii=False).replace("</", "<\\/")
     target.parent.mkdir(parents=True, exist_ok=True)
-    target.write_text(BLOCK.sub(lambda m: m.group(1) + blob + m.group(3), text))
+    target.write_text(BLOCK.sub(lambda match: match.group(1) + profile_blob + match.group(3), template_text))
     return target
