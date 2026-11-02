@@ -121,3 +121,8 @@ This is a product and technical decision log — closer to a lightweight PRD tha
 
 **Decision.** A cream's id is its entry type, so entries logged before profiles existed ("steroid", "taci") are already valid. Missing fields (no slot, no time) are treated as "once that day".
 **Why.** Months of history shouldn't need a migration to survive a model change.
+
+### 14. Profile changes are discussed first, written once
+
+**Decision.** When a parent wants to change the profile — adding a cream, updating limits, redefining areas — the agent talks it through fully before touching any file. All changes are written in one go when the parent confirms everything is final.
+**Why.** The profile is the single source of truth for how entries are counted and which alerts fire. A partial write mid-conversation could silently miscalculate a week of data before anyone notices. One atomic save when the intent is clear is safer than several incremental edits.
