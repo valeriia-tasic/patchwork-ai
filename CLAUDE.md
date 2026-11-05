@@ -18,12 +18,19 @@ If `private/helper.md` exists, read it: it holds the real child's details and th
 3. Do the math with the `patchwork` package, never by hand. If a question needs a metric the package doesn't have, say so and propose adding it.
 4. Real data never goes into the repo.
 
-## Keeping the live system in sync
-There is one source of truth for each thing:
-- **Logic** (metrics, alerts, report, charts, page): this repo. The scheduled agents clone it and run `python -m patchwork`; the live page is `web/index.html` published as-is.
-- **The family's setup**: the log's `config/profile` document.
-- **The data**: the log's `entries` collection.
-A change to logic is a commit plus a republish of the page; a change to the setup is an edit of `config/profile`. Neither needs the agent prompts to change.
+## Where things live
+- **Logic** (metrics, alerts, report, charts, page): this repo, and only here.
+- **Local mode (default, after cloning):** the setup is `private/profile.json` and the entries are `private/entries.json`. Everything runs on this machine. `GETTING_STARTED.md` walks a new user through it.
+- **Hosted mode (optional):** the log page is `web/index.html` published as a Claude artifact; its database holds the entries (`entries`) and the setup (`config/profile`). The scheduled agents in `prompts/` export both, clone this repo and run `python -m patchwork`, so they never restate rules.
+
+## Logging entries (local mode)
+When the parent says what they did ("hydrocortisone on arms today", "gave Zyrtec at 7:30", "peanut 1/12 serving at lunch"), append an entry to `private/entries.json` (create it as `[]` if missing) and confirm in one line.
+- Cream ids, areas and the antihistamine brand come from `private/profile.json`; match what the parent says to them, and ask if it's ambiguous.
+- Creams: `{"type": <cream id>, "day": "YYYY-MM-DD", "areas": [...]}`, plus `"slot": "morning"|"night"` for Morning / Night creams. Default day is today.
+- Antihistamine: `{"type": "anti", "day": ..., "at": "YYYY-MM-DDTHH:MM:00"}`. Flares: `type` `flare` with `areas` and `note`. Allergen exposure: `type` `allergen` with `allergen`, `amount` and `at`. Notes: `type` `note`.
+- When importing past records, show the count and a few rows before saving.
+
+For "run the report" or "any alerts?", run `python -m patchwork weekly --entries private/entries.json --out private/out` or `nightly`, and explain the output without changing any number.
 
 ## The log
 Entry `type` is a cream id from the profile, or `anti`, `flare`, `allergen`, `note`. Fields: `day` (local YYYY-MM-DD), `areas` (list), `note`, `at`, plus `slot` (`morning`/`night`) for Morning/Night creams, and `allergen` + `amount` for allergen exposure.

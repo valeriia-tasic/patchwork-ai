@@ -10,6 +10,8 @@ When you need to know whether you can apply more medication because your child i
 
 This repo is the production code, published with synthetic data. No real health data lives here.
 
+> **Want to run it for your own family?** Start with **[GETTING_STARTED.md](GETTING_STARTED.md)**. Prerequisites: a Claude Pro, Max, Team or Enterprise account with [Claude Code](https://code.claude.com/docs/en/setup) installed, Python 3.10+, and git. From clone to your first report takes about 15 minutes, and everything you enter stays on your machine.
+
 <p align="center">
   <img src="docs/phone-home.png" alt="Patchwork on a phone: monthly counts and one-tap buttons" width="200">
   <img src="docs/phone-allergen.png" alt="Logging an allergen exposure: allergen, amount, time" width="200">
@@ -124,6 +126,8 @@ The agent prompts contain no rules — only "clone, export, run, deliver" — so
 
 ## Run it
 
+First time? Follow [GETTING_STARTED.md](GETTING_STARTED.md): prerequisites, setup, logging and scheduling, step by step. Quick reference:
+
 ```bash
 pip install -r requirements.txt
 pytest -q
@@ -151,6 +155,7 @@ Changed the default profile? Run `python -m patchwork page --profile rules.json`
 | Path | What it is |
 |---|---|
 | `rules.json` | Default profile and schema reference: areas, full body, creams, limits, antihistamine, allergens |
+| `GETTING_STARTED.md` | Step-by-step: prerequisites, clone, set up, log, run, schedule |
 | `SETUP.md` | First-use questionnaire, for Claude |
 | `patchwork/setup.py` | The same questionnaire in the terminal (`init`) |
 | `patchwork/rules.py` | Loads and validates a profile; maps logged areas to tracked areas |
