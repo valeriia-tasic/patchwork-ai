@@ -1,0 +1,49 @@
+{
+  "subject": "Skin report \u2014 week of May 12",
+  "window": [
+    "2025-05-12",
+    "2025-05-18"
+  ],
+  "creams": {
+    "steroid": {
+      "days": 3,
+      "days_last_week": 2,
+      "area_counts": {
+        "Arms": 2,
+        "Legs": 0,
+        "Stomach": 1,
+        "Back": 2,
+        "Neck": 0,
+        "Face": 0,
+        "Diaper": 0
+      },
+      "area_counts_last_week": {
+        "Arms": 2,
+        "Legs": 1,
+        "Stomach": 2,
+        "Back": 1,
+        "Neck": 1,
+        "Face": 2,
+        "Diaper": 0
+      },
+      "avg_per_treated_area": 1.67,
+      "avg_per_treated_area_last_week": 1.5
+    },
+    "taci": {
+      "days": 2,
+      "days_last_week": 1
+    }
+  },
+  "antihistamine_days": 1,
+  "antihistamine_gap_days": 5.0,
+  "allergen_exposures": 2,
+  "rolling_area_average": {
+    "Arms": 1.47,
+    "Legs": 1.12,
+    "Stomach": 1.21,
+    "Back": 1.12,
+    "Neck": 1.21,
+    "Face": 0.78,
+    "Diaper": 0.26
+  }
+}

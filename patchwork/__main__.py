@@ -42,7 +42,7 @@ def cmd_init(args) -> int:
     Asks the parent about their body areas, creams, antihistamine, and allergens
     via the terminal, then saves the profile for all future commands.
     """
-    target = Path(args.outputput)
+    target = Path(args.output)
     if target.exists() and not setup._yes(input(f"{target} already exists. Replace it? [n] ")):
         print("Kept your existing profile.")
         return 0
@@ -77,7 +77,7 @@ def cmd_weekly(args) -> int:
     profile = load_profile(args.profile)
     entries = load_entries(args.entries)
     today = _today(args.today)
-    output_dir = Path(args.outputput)
+    output_dir = Path(args.output)
     output_dir.mkdir(parents=True, exist_ok=True)
     weekly_report = report.build_weekly(entries, profile, today)
     (output_dir / "report.txt").write_text(report.render_text(weekly_report))

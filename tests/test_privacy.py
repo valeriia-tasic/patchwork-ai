@@ -10,7 +10,7 @@ import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-SKIP_DIRS = {".git", "private", "out", "__pycache__", ".pytest_cache", ".venv", "venv"}
+SKIP_DIRS = {".git", "private", "output", "__pycache__", ".pytest_cache", ".venv", "venv"}
 TEXT_SUFFIXES = {".py", ".md", ".json", ".html", ".txt", ".yml", ".yaml", ".toml", ".cfg", ".js", ".css", ""}
 
 GENERIC = [
