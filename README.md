@@ -139,7 +139,7 @@ python -m patchwork init
 python -m patchwork sample --output data/sample_entries.json
 
 # Weekly report: writes report.txt / report.html / two PNG charts to out/
-python -m patchwork weekly --entries data/sample_entries.json --today 2025-05-18 --output out
+python -m patchwork weekly --entries data/sample_entries.json --today 2025-05-18 --output output
 
 # Nightly check: prints alerts as JSON (empty on a quiet night)
 python -m patchwork nightly --entries data/sample_entries.json --today 2025-05-18

@@ -157,7 +157,7 @@ def main(argv: list[str] | None = None) -> int:
         entry_subparser.add_argument("--today")
         entry_subparser.add_argument("--profile")
         if name == "weekly":
-            entry_subparser.add_argument("--output", default="out")
+            entry_subparser.add_argument("--output", default="output")
         entry_subparser.set_defaults(fn=handler_fn)
 
     sample_subparser = subparsers.add_parser("sample")
