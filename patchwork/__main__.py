@@ -81,7 +81,9 @@ def cmd_weekly(args) -> int:
     output_dir.mkdir(parents=True, exist_ok=True)
     weekly_report = report.build_weekly(entries, profile, today)
     (output_dir / "report.txt").write_text(report.render_text(weekly_report))
-    (output_dir / "report.html").write_text(report.render_html(weekly_report))
+    html = report.render_html(weekly_report)
+    html = html.replace(report.CHART_1, "chart-overview.png").replace(report.CHART_2, "chart-areas.png")
+    (output_dir / "report.html").write_text(html)
     (output_dir / "report.json").write_text(
         json.dumps({"subject": weekly_report.subject, **weekly_report.numbers}, default=str, indent=2)
     )

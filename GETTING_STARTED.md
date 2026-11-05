@@ -48,18 +48,38 @@ pytest -q                          # all tests should pass
 
 The repo ships with a synthetic log for a fictional toddler, so you can see what you'll get before entering anything real.
 
+### The app (log page)
+
+This is the main UI — the phone page with tap buttons, usage charts, and entry history. Run a local server from the repo root:
+
 ```bash
-# Sunday report: report.txt, report.html and two charts in out/
-python -m patchwork weekly  --entries data/sample_entries.json --today 2025-05-18 --output output
-
-# Nightly check: prints the alerts that would be pushed (empty on a quiet night)
-python -m patchwork nightly --entries data/sample_entries.json --today 2025-05-18
-
-# The phone log page, read-only demo
-python -m http.server 8000         # open http://localhost:8000/web/ , Ctrl+C to stop
+python -m http.server 8000
 ```
 
-Open `out/report.html` and `out/chart-areas.png` to see the report.
+Open `http://localhost:8000/web/` in your browser. It loads in demo mode: synthetic data, read-only. Press Ctrl+C to stop the server.
+
+### The weekly report
+
+The report is a separate thing — an email summary with charts, generated on demand. It's not the app.
+
+```bash
+# Generate: writes report.txt, report.html and two charts into output/
+python -m patchwork weekly --entries data/sample_entries.json --today 2025-05-18 --output output
+
+# Read as plain text
+cat output/report.txt
+
+# View with charts in a browser (with the server still running)
+# open http://localhost:8000/output/report.html
+```
+
+### The nightly check
+
+```bash
+python -m patchwork nightly --entries data/sample_entries.json --today 2025-05-18
+```
+
+Prints any alerts that would be pushed that night (empty on a quiet night).
 
 ## 4. Set up your profile
 
@@ -115,7 +135,7 @@ Have past records? Paste them into Claude and ask it to import them; it confirms
 ## 6. Run your reports
 
 ```bash
-mkdir -p private/outputput
+mkdir -p private/output
 python -m patchwork weekly  --entries private/entries.json --output private/output
 python -m patchwork nightly --entries private/entries.json
 ```

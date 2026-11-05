@@ -249,7 +249,8 @@ def render_html(weekly_report: WeeklyReport) -> str:
     heading_template = '<h3 style="margin:18px 0 6px;font-size:15px;letter-spacing:.04em">{}</h3>'
     list_template = '<ul style="margin:0;padding-left:18px;line-height:1.5">{}</ul>'
     image_template = '<p style="margin:16px 0"><img src="{}" alt="{}" style="width:100%;max-width:640px;height:auto"></p>'
-    out = ['<div style="font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;color:#1d2230;'
+    out = ['<meta charset="utf-8">',
+           '<div style="font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;color:#1d2230;'
            'max-width:640px;font-size:14px">']
     for section in weekly_report.sections:
         out.append(
