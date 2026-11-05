@@ -2,13 +2,13 @@
 
   init      Ask the first-use questions and write private/profile.json
   validate  [--profile PATH]   Check a profile; prints problems or "ok"
-  weekly    --entries PATH [--today YYYY-MM-DD] [--out DIR] [--profile PATH]
+  weekly    --entries PATH [--today YYYY-MM-DD] [--output DIR] [--profile PATH]
             Writes report.txt, report.html, report.json, chart-overview.png, chart-areas.png
   nightly   --entries PATH [--today YYYY-MM-DD] [--profile PATH]
             Prints JSON: {"alerts": [...], "push": "...", "message": "..."}
-  sample    [--out PATH] [--weeks N] [--seed N] [--profile PATH]
+  sample    [--output PATH] [--weeks N] [--seed N] [--profile PATH]
             Writes a synthetic log for a fictional toddler, following the profile
-  page      [--profile PATH] [--out PATH]
+  page      [--profile PATH] [--output PATH]
             Builds the log page with the profile baked in
 
 Without --profile, private/profile.json is used if it exists, else rules.json.
@@ -42,7 +42,7 @@ def cmd_init(args) -> int:
     Asks the parent about their body areas, creams, antihistamine, and allergens
     via the terminal, then saves the profile for all future commands.
     """
-    target = Path(args.out)
+    target = Path(args.outputput)
     if target.exists() and not setup._yes(input(f"{target} already exists. Replace it? [n] ")):
         print("Kept your existing profile.")
         return 0
@@ -71,13 +71,13 @@ def cmd_validate(args) -> int:
 def cmd_weekly(args) -> int:
     """Compute the weekly report, render it as text/HTML/JSON, and save the two charts.
 
-    Output files go into --out (default: out/): report.txt, report.html, report.json,
+    Output files go into --output (default: out/): report.txt, report.html, report.json,
     chart-overview.png, chart-areas.png. Prints a JSON summary on stdout for the agent.
     """
     profile = load_profile(args.profile)
     entries = load_entries(args.entries)
     today = _today(args.today)
-    output_dir = Path(args.out)
+    output_dir = Path(args.outputput)
     output_dir.mkdir(parents=True, exist_ok=True)
     weekly_report = report.build_weekly(entries, profile, today)
     (output_dir / "report.txt").write_text(report.render_text(weekly_report))
@@ -117,9 +117,9 @@ def cmd_sample(args) -> int:
     """
     from .synthetic import generate
     data = generate(weeks=args.weeks, seed=args.seed, end=_today(args.today), profile=load_profile(args.profile))
-    Path(args.out).parent.mkdir(parents=True, exist_ok=True)
-    Path(args.out).write_text(json.dumps(data, indent=1))
-    print(f"wrote {len(data)} synthetic entries to {args.out}")
+    Path(args.output).parent.mkdir(parents=True, exist_ok=True)
+    Path(args.output).write_text(json.dumps(data, indent=1))
+    print(f"wrote {len(data)} synthetic entries to {args.output}")
     return 0
 
 
@@ -130,7 +130,7 @@ def cmd_page(args) -> int:
     private/dist/index.html to keep real family config out of the public repo.
     """
     from .page import build
-    output_path = build(args.profile, args.out)
+    output_path = build(args.profile, args.output)
     print(f"built {output_path}")
     return 0
 
@@ -144,7 +144,7 @@ def main(argv: list[str] | None = None) -> int:
     subparsers = parser.add_subparsers(dest="cmd", required=True)
 
     init_subparser = subparsers.add_parser("init")
-    init_subparser.add_argument("--out", default=str(PRIVATE_PROFILE))
+    init_subparser.add_argument("--output", default=str(PRIVATE_PROFILE))
     init_subparser.set_defaults(fn=cmd_init)
 
     validate_subparser = subparsers.add_parser("validate")
@@ -157,11 +157,11 @@ def main(argv: list[str] | None = None) -> int:
         entry_subparser.add_argument("--today")
         entry_subparser.add_argument("--profile")
         if name == "weekly":
-            entry_subparser.add_argument("--out", default="out")
+            entry_subparser.add_argument("--output", default="out")
         entry_subparser.set_defaults(fn=handler_fn)
 
     sample_subparser = subparsers.add_parser("sample")
-    sample_subparser.add_argument("--out", default="data/sample_entries.json")
+    sample_subparser.add_argument("--output", default="data/sample_entries.json")
     sample_subparser.add_argument("--weeks", type=int, default=12)
     sample_subparser.add_argument("--seed", type=int, default=7)
     sample_subparser.add_argument("--today")
@@ -170,7 +170,7 @@ def main(argv: list[str] | None = None) -> int:
 
     page_subparser = subparsers.add_parser("page")
     page_subparser.add_argument("--profile")
-    page_subparser.add_argument("--out")
+    page_subparser.add_argument("--output")
     page_subparser.set_defaults(fn=cmd_page)
 
     args = parser.parse_args(argv)

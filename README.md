@@ -136,10 +136,10 @@ pytest -q
 python -m patchwork init
 
 # Synthetic data for a fictional toddler, following the active profile
-python -m patchwork sample --out data/sample_entries.json
+python -m patchwork sample --output data/sample_entries.json
 
 # Weekly report: writes report.txt / report.html / two PNG charts to out/
-python -m patchwork weekly --entries data/sample_entries.json --today 2025-05-18 --out out
+python -m patchwork weekly --entries data/sample_entries.json --today 2025-05-18 --output out
 
 # Nightly check: prints alerts as JSON (empty on a quiet night)
 python -m patchwork nightly --entries data/sample_entries.json --today 2025-05-18

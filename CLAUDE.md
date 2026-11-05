@@ -30,7 +30,7 @@ When the parent says what they did ("hydrocortisone on arms today", "gave Zyrtec
 - Antihistamine: `{"type": "anti", "day": ..., "at": "YYYY-MM-DDTHH:MM:00"}`. Flares: `type` `flare` with `areas` and `note`. Allergen exposure: `type` `allergen` with `allergen`, `amount` and `at`. Notes: `type` `note`.
 - When importing past records, show the count and a few rows before saving.
 
-For "run the report" or "any alerts?", run `python -m patchwork weekly --entries private/entries.json --out private/out` or `nightly`, and explain the output without changing any number.
+For "run the report" or "any alerts?", run `python -m patchwork weekly --entries private/entries.json --output private/out` or `nightly`, and explain the output without changing any number.
 
 ## The log
 Entry `type` is a cream id from the profile, or `anti`, `flare`, `allergen`, `note`. Fields: `day` (local YYYY-MM-DD), `areas` (list), `note`, `at`, plus `slot` (`morning`/`night`) for Morning/Night creams, and `allergen` + `amount` for allergen exposure.
@@ -43,8 +43,8 @@ Entry `type` is a cream id from the profile, or `anti`, `flare`, `allergen`, `no
 python -m patchwork init       # first-use questionnaire in the terminal (SETUP.md is the Claude version)
 python -m patchwork validate   # check the active profile
 python -m patchwork page       # build the log page from the active profile
-python -m patchwork weekly  --entries <file-or-dir> --today YYYY-MM-DD --out out
+python -m patchwork weekly  --entries <file-or-dir> --today YYYY-MM-DD --output out
 python -m patchwork nightly --entries <file-or-dir> --today YYYY-MM-DD
-python -m patchwork sample  --out data/sample_entries.json
+python -m patchwork sample  --output data/sample_entries.json
 pytest -q
 ```

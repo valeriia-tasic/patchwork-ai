@@ -50,7 +50,7 @@ The repo ships with a synthetic log for a fictional toddler, so you can see what
 
 ```bash
 # Sunday report: report.txt, report.html and two charts in out/
-python -m patchwork weekly  --entries data/sample_entries.json --today 2025-05-18 --out out
+python -m patchwork weekly  --entries data/sample_entries.json --today 2025-05-18 --output out
 
 # Nightly check: prints the alerts that would be pushed (empty on a quiet night)
 python -m patchwork nightly --entries data/sample_entries.json --today 2025-05-18
@@ -116,7 +116,7 @@ Have past records? Paste them into Claude and ask it to import them; it confirms
 
 ```bash
 mkdir -p private/out
-python -m patchwork weekly  --entries private/entries.json --out private/out
+python -m patchwork weekly  --entries private/entries.json --output private/out
 python -m patchwork nightly --entries private/entries.json
 ```
 
@@ -133,7 +133,7 @@ To get the nightly check and Sunday report without remembering, add them to your
 0 20 * * * cd /path/to/patchwork-ai && .venv/bin/python -m patchwork nightly --entries private/entries.json > private/out/nightly.json 2>&1
 
 # Sunday report at 8pm
-0 20 * * 0 cd /path/to/patchwork-ai && .venv/bin/python -m patchwork weekly --entries private/entries.json --out private/out
+0 20 * * 0 cd /path/to/patchwork-ai && .venv/bin/python -m patchwork weekly --entries private/entries.json --output private/out
 ```
 
 Cron only runs while your computer is awake. Next morning, ask Claude "what did last night's check find?" and it reads `private/out/nightly.json`.
