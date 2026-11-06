@@ -1,35 +1,27 @@
 # Getting started
 
-From a fresh clone to your own Patchwork running on your laptop: your profile, your log, your reports. About 15 minutes.
-
-Everything here runs locally. Your answers and entries stay in `private/`, which git never sees.
+From zero to a one-tap log page on your phone in about 15 minutes.
 
 ---
 
-## Prerequisites
+## What you need
 
-Have these before you start:
-
-| You need | Why | Check |
-|---|---|---|
-| A **Claude Pro, Max, Team or Enterprise** account | Claude Code, which runs the setup questionnaire and logs entries for you. The free plan doesn't include Claude Code. | Sign in at claude.ai |
-| **Claude Code** installed | The agent that works inside this repo | `claude --version` |
-| **Python 3.10 or newer** | The `patchwork` package does all counting and charting | `python3 --version` |
-| **git** | To clone the repo | `git --version` |
-| macOS, Linux, or Windows with WSL | Commands below are for a Bash/Zsh terminal | — |
-
-No Claude account? Steps 2, 3 and 6 still work, and `python -m patchwork init` replaces the questionnaire in step 4. You'll edit `private/entries.json` by hand instead of asking Claude to log.
+| You need | Why |
+|---|---|
+| A **Claude Pro, Max, Team or Enterprise** account | Runs the setup, publishes the log page, and runs the scheduled agents |
+| **Claude Code** installed | Runs the setup questionnaire inside this repo |
+| **Python 3.10+** and **git** | Installs the patchwork package that does all the counting |
 
 ---
 
-## 1. Install Claude Code and sign in
+## 1. Install Claude Code
 
 ```bash
-curl -fsSL https://claude.ai/install.sh | bash   # or: brew install --cask claude-code
-claude --version                                  # prints a version number
+curl -fsSL https://claude.ai/install.sh | bash
+claude --version
 ```
 
-The first time you run `claude`, it opens your browser to sign in with your Claude account. Full instructions: [Claude Code setup](https://code.claude.com/docs/en/setup).
+The first time you run `claude` it opens your browser to sign in. Full instructions: [Claude Code setup](https://code.claude.com/docs/en/setup).
 
 ## 2. Clone and install
 
@@ -38,136 +30,88 @@ git clone https://github.com/valeriia-tasic/patchwork-ai.git
 cd patchwork-ai
 
 python3 -m venv .venv
-source .venv/bin/activate          # run this again in every new terminal
+source .venv/bin/activate
 pip install -r requirements.txt
-
-pytest -q                          # all tests should pass
 ```
 
-## 3. Try the demo first (no setup needed)
-
-The repo ships with a synthetic log for a fictional toddler, so you can see what you'll get before entering anything real.
-
-### The app (log page)
-
-This is the main UI — the phone page with tap buttons, usage charts, and entry history. Run a local server from the repo root:
-
-```bash
-python -m http.server 8000
-```
-
-Open `http://localhost:8000/web/` in your browser. It loads in demo mode: synthetic data, read-only. Press Ctrl+C to stop the server.
-
-### The weekly report
-
-The report is a separate thing — an email summary with charts, generated on demand. It's not the app.
-
-```bash
-# Generate: writes report.txt, report.html and two charts into output/
-python -m patchwork weekly --entries data/sample_entries.json --today 2025-05-18 --output output
-
-# Read as plain text
-cat output/report.txt
-
-# View with charts in a browser (with the server still running)
-# open http://localhost:8000/output/report.html
-```
-
-### The nightly check
-
-```bash
-python -m patchwork nightly --entries data/sample_entries.json --today 2025-05-18
-```
-
-Prints any alerts that would be pushed that night (empty on a quiet night).
-
-## 4. Set up your profile
-
-Start Claude Code in the repo folder:
+## 3. Set up your profile
 
 ```bash
 claude
 ```
 
-Because there's no `private/profile.json` yet, Claude starts the first-use questionnaire ([`SETUP.md`](SETUP.md)) on its own. If it doesn't, type **"run setup"**. It asks one topic at a time:
+Because there's no profile yet, Claude starts the setup questionnaire automatically. If it doesn't, type **"run setup"**. It asks one topic at a time:
 
-1. Body areas you track, and which smaller spots roll up into them (elbows → Arms)
+1. Body areas you track
 2. What "full body" covers
-3. Each cream: name, where it's used, once a day or Morning / Night, and optional alert limits
-4. Your antihistamine: brand and optional alert limit
+3. Each cream: name, areas, schedule, and optional alert limits
+4. Medications (antihistamine, etc.) and optional alert limits
 5. Whether to log allergen exposure
 6. Email, timezone, report day
 
-Limits are optional and come from **your doctor's instructions**. Patchwork never suggests one; leave a limit blank and nothing alerts for it.
+Limits are optional and come from **your doctor's instructions**. Leave any blank and nothing alerts for it.
 
-Claude saves `private/profile.json` and checks it. To check it yourself:
+## 4. Publish the log page
 
-```bash
-python -m patchwork validate       # prints "ok"
-```
+After setup, Claude builds `private/dist/index.html`. Now publish it so you can open it on your phone:
 
-No Claude Code? Run `python -m patchwork init` for the same questions in the terminal.
+1. Open [claude.ai](https://claude.ai) in your browser (the regular chat, not Claude Code).
+2. Send this message:
 
-## 5. Log entries
+   > "Publish this as an artifact with a database enabled:"
 
-With Claude Code open in the repo, just tell it what you did:
+   Then paste the full contents of `private/dist/index.html`.
 
-> "Hydrocortisone on arms and legs today"
-> "Gave Zyrtec at 7:30pm"
-> "Peanut, 1/12 serving at lunch"
-> "Flare on her neck, after swimming"
+3. Claude creates the artifact and gives you a URL like `https://claude.ai/artifact/…`
 
-Claude adds each one to `private/entries.json` and confirms in one line. You can also edit the file directly; each entry looks like this:
+4. In the same chat, save your profile to the database so the page stays up to date if you change settings later:
 
-```json
-[
-  {"type": "hydrocortisone", "day": "2026-11-05", "areas": ["Arms", "Legs"]},
-  {"type": "anti", "day": "2026-11-05", "at": "2026-11-05T19:30:00"},
-  {"type": "allergen", "day": "2026-11-05", "at": "2026-11-05T12:00:00", "allergen": "Peanut", "amount": "1/12 serving"},
-  {"type": "flare", "day": "2026-11-05", "areas": ["Neck"], "note": "after swimming"}
-]
-```
+   > "Save my profile as the `config/profile` document in this artifact's database:"
 
-`type` is a cream id from your profile (shown by `validate` and in `private/profile.json`), or `anti`, `flare`, `allergen` or `note`.
+   Then paste `private/profile.json`.
 
-Have past records? Paste them into Claude and ask it to import them; it confirms the count before saving.
+## 5. Add to your phone's home screen
 
-## 6. Run your reports
+Open the artifact URL in your phone's browser:
 
-```bash
-mkdir -p private/output
-python -m patchwork weekly  --entries private/entries.json --output private/output
-python -m patchwork nightly --entries private/entries.json
-```
+- **iPhone (Safari):** tap the Share icon → "Add to Home Screen" → Add
+- **Android (Chrome):** tap the three-dot menu → "Add to Home Screen" → Add
 
-Or ask Claude: **"Run this week's report"** or **"Any alerts tonight?"** Claude runs the same commands and explains the result. It never counts by hand.
+The page appears on your home screen like a native app. Tap it to open the log directly.
 
-Reports use your profile automatically and default to today. Add `--today YYYY-MM-DD` to look at another week.
+## 6. Log entries
 
-## 7. Optional: run it on a schedule
+**From the page:** tap a button (Steroid, Taci, Zyrtec, Flare, Note), fill in details, tap Save. Done.
 
-To get the nightly check and Sunday report without remembering, add them to your crontab (`crontab -e`). Replace the path with where you cloned the repo:
+**By conversation:** tell Claude what happened — "steroid on arms today", "gave Zyrtec at 7pm", "flare on her neck after swimming" — and it logs it to the database.
 
-```cron
-# Nightly check at 8pm; alerts saved to private/output/nightly.json
-0 20 * * * cd /path/to/patchwork-ai && .venv/bin/python -m patchwork nightly --entries private/entries.json > private/output/nightly.json 2>&1
+## 7. Reports and alerts
 
-# Sunday report at 8pm
-0 20 * * 0 cd /path/to/patchwork-ai && .venv/bin/python -m patchwork weekly --entries private/entries.json --output private/output
-```
+Ask Claude in conversation:
 
-Cron only runs while your computer is awake. Next morning, ask Claude "what did last night's check find?" and it reads `private/output/nightly.json`.
+> "Run this week's report"
+> "Any alerts tonight?"
 
-## 8. Optional: phone logging and cloud agents
+Claude runs the analysis and explains the numbers. It never counts by hand.
 
-The author's own setup goes further: a one-tap log page on the phone, a push notification at 8pm, and the Sunday report emailed with charts, all running in the cloud whether or not a laptop is on. It uses Claude features beyond Claude Code (published artifacts with storage, scheduled tasks, and a Gmail connector), so availability depends on your plan.
+## 8. Set up nightly alerts and the weekly report
 
-The pieces are in the repo:
+To get these automatically — no laptop needed — create two scheduled tasks in claude.ai.
 
-- `web/index.html`: the log page. Publish it as a Claude artifact with a database, then save your `private/profile.json` into it as the `config/profile` document. The page reads its buttons and areas from there.
-- `prompts/nightly.md` and `prompts/weekly.md`: the two scheduled-agent prompts. Fill in the `{{…}}` placeholders and create them as scheduled tasks. Each run clones this repo and runs `python -m patchwork`, so all the rules stay in the code.
+The prompts are in `prompts/nightly.md` and `prompts/weekly.md`. Each needs four values:
 
-Ask Claude to walk you through it; it has this guide and the repo for context.
+| Placeholder | What to put |
+|---|---|
+| `{{REPO_URL}}` | Your fork's git URL |
+| `{{LOG_URL}}` | The artifact URL from step 4 |
+| `{{TZ}}` | Your timezone, e.g. `America/New_York` |
+| `{{EMAIL}}` | Your email (weekly prompt only) |
+
+In claude.ai, tell Claude:
+
+> "Create a scheduled task that runs every day at 8pm using this prompt:" (paste `prompts/nightly.md` with placeholders filled in)
+
+> "Create a scheduled task that runs every Sunday at 8pm using this prompt:" (paste `prompts/weekly.md` with placeholders filled in)
 
 ---
 
@@ -180,7 +124,7 @@ If you fork this repo and commit changes, run `pytest -q` first. `tests/test_pri
 | Problem | Fix |
 |---|---|
 | `claude: command not found` | Open a new terminal; if it persists see [Fix your PATH](https://code.claude.com/docs/en/troubleshoot-install.md) |
-| `ModuleNotFoundError: matplotlib` | The virtual environment isn't active: `source .venv/bin/activate` |
-| `validate` lists problems | Each line names the field to fix; edit `private/profile.json` or rerun setup |
-| Report says 0 for everything | The `type` in your entries doesn't match a cream id in your profile, or `--today` is outside your data |
+| `ModuleNotFoundError: matplotlib` | Run `source .venv/bin/activate` first |
+| `validate` lists problems | Each line names the field to fix; rerun setup or edit `private/profile.json` |
 | Questionnaire didn't start | Type "run setup" in Claude Code |
+| Page shows demo data after publishing | The `config/profile` document wasn't saved — repeat step 4 |

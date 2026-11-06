@@ -61,6 +61,7 @@ Then ask the limit question(s) for that item. If the parent skips (blank answer)
 1. Read the summary back, grouped as above, and ask "Save this?"
 2. Write `private/profile.json` in the shape of `rules.json`. Cream ids are lowercase slugs of the name and can't be `anti`, `flare`, `allergen` or `note`.
 3. Run `python -m patchwork validate` and fix anything it reports.
-4. If the family uses the hosted log page, also save the profile as the log's `config/profile` document. The page and the scheduled agents read it from there, so it is the one live copy; `private/profile.json` is the local copy for running reports on the laptop.
-5. Otherwise run `python -m patchwork page` to build `private/dist/index.html` with the profile baked in.
+4. Run `python -m patchwork page` to build `private/dist/index.html` with the profile baked in.
+5. If the family uses the hosted log page, also save the profile as the log's `config/profile` document. The page and the scheduled agents read it from there, so it is the one live copy; `private/profile.json` is the local copy for running reports on the laptop.
 6. Run `pytest -q` to confirm nothing personal leaked into tracked files.
+7. Tell the parent: "Setup is done. To get the log page on your phone, follow **step 8** in `GETTING_STARTED.md`."
