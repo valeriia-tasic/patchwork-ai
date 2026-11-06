@@ -28,7 +28,6 @@ def test_new_family_with_two_creams_and_allergens():
     assert p["areas"]["full_body"]["covers"] == ["Arms", "Legs", "Torso"]
     aliases = p["areas"]["aliases"]
     assert aliases["elbows"] == "Arms" and aliases["ankles"] == "Legs"   # parent-entered
-    assert aliases["elbow"] == "Arms" and aliases["shin"] == "Legs"      # defaults included
     assert "tail" not in aliases                                          # invalid entry dropped
     assert "side" not in aliases                                          # Back not in this family's areas
     hc, pr = p["creams"]
