@@ -65,11 +65,11 @@ def weekly_overview(entries: list[Entry], profile: Profile, today: date, out: Pa
         else:
             values = [len(m.days_of(entries, cream.id, window)) for window in windows]
             series.append((values, f"{cream.name} — days", cream.color, MARKERS[index % 6], False))
-    if profile.antihistamine_enabled:
+    for med in profile.medications:
         series.append((
-            [len(m.days_of(entries, "anti", window)) for window in windows],
-            f"{profile.antihistamine_brand} — days",
-            profile.antihistamine_color,
+            [len(m.days_of(entries, med.id, window)) for window in windows],
+            f"{med.name} — days",
+            med.color,
             "s",
             False,
         ))
@@ -91,7 +91,7 @@ def weekly_overview(entries: list[Entry], profile: Profile, today: date, out: Pa
     ax.set_yticks(range(8))
     ax.set_ylabel("Per week (0–7)")
     ax.set_xlabel("Week starting (Monday)")
-    names = [cream.name for cream in profile.creams] + ([profile.antihistamine_brand] if profile.antihistamine_enabled else [])
+    names = [cream.name for cream in profile.creams] + [med.name for med in profile.medications]
     fig.suptitle(f"{_title_list(names)} — last {weeks} weeks", x=0.07, ha="left", fontsize=13, weight="bold")
     fig.text(
         0.07, 0.905,
