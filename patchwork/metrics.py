@@ -200,17 +200,17 @@ def rolling_area_average(
     return {area: round(len(day_set) / span_weeks, 2) for area, day_set in day_sets.items()}
 
 
-# --- antihistamine -----------------------------------------------------------
+# --- medications -------------------------------------------------------------
 
-def antihistamine_gap(entries: Iterable[Entry], window: Window) -> float | None:
-    """Return the mean days between consecutive antihistamine doses touching the window.
+def medication_gap(entries: Iterable[Entry], med_id: str, window: Window) -> float | None:
+    """Return the mean days between consecutive doses of a medication touching the window.
 
     The gap from the last dose before the window counts too, so a single dose in the
     week still has a gap to compare. Returns None when there are no doses or nothing
     to compare.
-    Used by report.build_weekly to show dosing frequency in the antihistamine section.
+    Used by report.build_weekly to show dosing frequency in the medication sections.
     """
-    all_days = sorted(days_of(entries, "anti"))
+    all_days = sorted(days_of(entries, med_id))
     inside = [day for day in all_days if day in window]
     if not inside:
         return None

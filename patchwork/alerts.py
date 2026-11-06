@@ -16,6 +16,7 @@ class Alert:
     headline: str      # short, push-sized
     detail: str        # one line for the message body
     context: list[str] = field(default_factory=list)
+    key: str = ""      # stable dedup id; set by check functions, empty for trend alerts
 
 
 def _format_dates(days: list[date]) -> str:
@@ -26,28 +27,29 @@ def _format_dates(days: list[date]) -> str:
     return ", ".join(f"{day:%b} {day.day}" for day in days)
 
 
-def check_antihistamine(entries: list[Entry], profile: Profile, today: date) -> Alert | None:
-    """Return an Alert when the antihistamine was given more than the limit within its window.
+def check_medications(entries: list[Entry], profile: Profile, today: date) -> list[Alert]:
+    """Return Alerts for any medication that exceeded its dose limit within its window.
 
-    Returns None when antihistamine tracking is off, no limit is set, or the limit
-    was not exceeded. Used by nightly to build the push notification.
+    Loops all medications in the profile; skips those with no limit set.
+    Used by nightly to build the push notification.
     """
-    if not profile.antihistamine_enabled:
-        return None
-    window_days, max_doses = profile.antihistamine_window_days, profile.antihistamine_max_doses
-    if max_doses is None or window_days is None:
-        return None
-    recent = sorted(m.days_of(entries, "anti", m.Window(today - timedelta(days=window_days - 1), today)))
-    if len(recent) <= max_doses:
-        return None
-    last_7 = len(m.days_of(entries, "anti", m.rolling_week(today)))
-    last_14 = len(m.days_of(entries, "anti", m.Window(today - timedelta(days=13), today)))
-    brand = profile.antihistamine_brand
-    return Alert(
-        kind="antihistamine",
-        headline=f"{brand} {len(recent)} of last {window_days} days",
-        detail=f"{brand} on {_format_dates(recent)} — {last_7} days in the last 7, {last_14} in the last 14.",
-    )
+    found: list[Alert] = []
+    for med in profile.medications:
+        if med.max_doses is None or med.window_days is None:
+            continue
+        window = m.Window(today - timedelta(days=med.window_days - 1), today)
+        recent = sorted(m.days_of(entries, med.id, window))
+        if len(recent) <= med.max_doses:
+            continue
+        last_7 = len(m.days_of(entries, med.id, m.rolling_week(today)))
+        last_14 = len(m.days_of(entries, med.id, m.Window(today - timedelta(days=13), today)))
+        found.append(Alert(
+            kind="medication",
+            headline=f"{med.name} {len(recent)} of last {med.window_days} days",
+            detail=f"{med.name} on {_format_dates(recent)} — {last_7} days in the last 7, {last_14} in the last 14.",
+            key=f"medication:{med.id}",
+        ))
+    return found
 
 
 def check_creams(entries: list[Entry], profile: Profile, today: date) -> list[Alert]:
@@ -66,6 +68,7 @@ def check_creams(entries: list[Entry], profile: Profile, today: date) -> list[Al
                 headline=f"{where}{cream.name} {count}x this week",
                 detail=f"{cream.name} on {area}: {count} days in the last 7 ({_format_dates(days)}), "
                        f"over your limit of {cream.max_days_per_area_per_week}.",
+                key=f"cream_area:{cream.id}:{area}",
             ))
         over_total = m.total_over_limit(entries, cream, week)
         if over_total:
@@ -74,6 +77,7 @@ def check_creams(entries: list[Entry], profile: Profile, today: date) -> list[Al
                 kind="cream_total",
                 headline=f"{cream.name} {count} days this week",
                 detail=f"{cream.name}: {count} days in the last 7, over your limit of {limit}.",
+                key=f"cream_total:{cream.id}",
             ))
     return alerts
 
@@ -108,10 +112,10 @@ def check_trends(entries: list[Entry], profile: Profile, today: date) -> list[Al
                 )
                 metrics_to_check.append((f"{area} {cream.name}", current_value, baseline_average))
 
-    if profile.antihistamine_enabled:
-        current_value = len(m.days_of(entries, "anti", current_window))
-        baseline_average = sum(len(m.days_of(entries, "anti", window)) for window in baseline_windows) / baseline_week_count
-        metrics_to_check.append((f"{profile.antihistamine_brand} days", current_value, baseline_average))
+    for med in profile.medications:
+        current_value = len(m.days_of(entries, med.id, current_window))
+        baseline_average = sum(len(m.days_of(entries, med.id, window)) for window in baseline_windows) / baseline_week_count
+        metrics_to_check.append((f"{med.name} days", current_value, baseline_average))
 
     flares_this_week = sum(1 for entry in entries if entry.type == "flare" and entry.day in current_window)
     flares_baseline = (
@@ -156,6 +160,20 @@ def context(entries: list[Entry], today: date) -> list[str]:
     return lines
 
 
+def filter_new(found: list[Alert], sent: list[dict], today: date) -> list[Alert]:
+    """Return only alerts not already sent within the last 7 days.
+
+    `sent` is a list of dicts with 'key' and 'date' (ISO string). Alerts with an
+    empty key (trend alerts) are always passed through. Suppresses a keyed alert
+    if the same key was sent on a date still within the 7-day rolling window.
+    """
+    recent_keys = {
+        item["key"] for item in sent
+        if (today - date.fromisoformat(item["date"])).days < 7
+    }
+    return [a for a in found if not a.key or a.key not in recent_keys]
+
+
 def nightly(entries: list[Entry], profile: Profile, today: date) -> list[Alert]:
     """Run all nightly checks and return every Alert that fired.
 
@@ -164,9 +182,7 @@ def nightly(entries: list[Entry], profile: Profile, today: date) -> list[Alert]:
     Called by cmd_nightly, which serialises the result to JSON for the agent.
     """
     found_alerts: list[Alert] = []
-    antihistamine_alert = check_antihistamine(entries, profile, today)
-    if antihistamine_alert:
-        found_alerts.append(antihistamine_alert)
+    found_alerts += check_medications(entries, profile, today)
     found_alerts += check_creams(entries, profile, today)
     found_alerts += check_trends(entries, profile, today)
     if found_alerts:

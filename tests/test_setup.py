@@ -20,7 +20,7 @@ def test_new_family_with_two_creams_and_allergens():
         "Hydrocortisone", "any", "d", "3", "",   # cream 1: any area, daily, 3/area/week, no total
         "Protopic", "Face", "m", "",             # cream 2: face only, morning/night, no total (no per-area q)
         "",                                      # done with creams
-        "y", "Claritin", "2", "7",               # antihistamine
+        "Claritin", "2", "7", "",                # medication: Claritin, limit 2/7 days, then stop
         "y", "Kiwi",                             # allergens + extra
         "", "", "", "",                          # delivery defaults
     ), say=lambda s: None)
@@ -34,7 +34,8 @@ def test_new_family_with_two_creams_and_allergens():
     assert hc == {**hc, "id": "hydrocortisone", "areas": "any", "schedule": "daily",
                   "limits": {"max_days_per_area_per_week": 3, "max_days_per_week": None}}
     assert pr["areas"] == ["Face"] and pr["schedule"] == "morning_night"
-    assert p["antihistamine"]["brand"] == "Claritin" and p["antihistamine"]["limit"] == {"max_doses": 2, "window_days": 7}
+    claritin = p["medications"][0]
+    assert claritin["name"] == "Claritin" and claritin["limit"] == {"max_doses": 2, "window_days": 7}
     assert p["allergens"]["list"][-1] == "Kiwi" and len(p["allergens"]["list"]) == 10
 
 
@@ -47,7 +48,7 @@ def test_questionnaire_reproduces_the_original_setup():
         "Steroid", "any", "d", "2", "",
         "Taci", "Face", "d", "",
         "",
-        "y", "Zyrtec", "1", "3",
+        "Zyrtec", "1", "3", "",       # medication: Zyrtec, limit 1/3 days, then stop
         "y", "",
         "", "", "", "",
     ), say=lambda s: None)

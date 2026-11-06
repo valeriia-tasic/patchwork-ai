@@ -79,7 +79,9 @@ def cmd_weekly(args) -> int:
     today = _today(args.today)
     output_dir = Path(args.output)
     output_dir.mkdir(parents=True, exist_ok=True)
-    weekly_report = report.build_weekly(entries, profile, today)
+    sent_path = Path(args.sent) if args.sent else None
+    sent: list[dict] | None = json.loads(sent_path.read_text()) if sent_path and sent_path.exists() else ([] if sent_path else None)
+    weekly_report = report.build_weekly(entries, profile, today, sent=sent)
     (output_dir / "report.txt").write_text(report.render_text(weekly_report))
     html = report.render_html(weekly_report)
     html = html.replace(report.CHART_1, "chart-overview.png").replace(report.CHART_2, "chart-areas.png")
@@ -96,16 +98,31 @@ def cmd_weekly(args) -> int:
 def cmd_nightly(args) -> int:
     """Run the nightly alert checks and print a JSON object for the agent.
 
+    Loads sent history from --sent (if provided) and suppresses alerts already sent
+    within the last 7 days, so each limit breach fires only once per rolling week.
     The JSON contains 'alerts' (list), 'push' (push-notification string), and
     'message' (multi-line body). The agent reads this and decides how to deliver it.
     """
     profile = load_profile(args.profile)
-    found = alerts.nightly(load_entries(args.entries), profile, _today(args.today))
-    lines = [alert.detail for alert in found]
-    context_lines = found[0].context if found else []
+    today = _today(args.today)
+    found = alerts.nightly(load_entries(args.entries), profile, today)
+
+    sent_path = Path(args.sent) if args.sent else None
+    sent: list[dict] = json.loads(sent_path.read_text()) if sent_path and sent_path.exists() else []
+    new_alerts = alerts.filter_new(found, sent, today)
+
+    lines = [alert.detail for alert in new_alerts]
+    context_lines = new_alerts[0].context if new_alerts else []
     message = "\n".join(lines + (["Context:"] + context_lines if context_lines else []))
+
+    if sent_path:
+        newly_fired = [{"key": a.key, "date": today.isoformat(), "headline": a.headline}
+                       for a in new_alerts if a.key]
+        if newly_fired:
+            sent_path.write_text(json.dumps(sent + newly_fired, indent=2))
+
     print(json.dumps(
-        {"alerts": [asdict(alert) for alert in found], "push": alerts.push_text(found), "message": message},
+        {"alerts": [asdict(a) for a in new_alerts], "push": alerts.push_text(new_alerts), "message": message},
         indent=2,
     ))
     return 0
@@ -158,6 +175,7 @@ def main(argv: list[str] | None = None) -> int:
         entry_subparser.add_argument("--entries", required=True)
         entry_subparser.add_argument("--today")
         entry_subparser.add_argument("--profile")
+        entry_subparser.add_argument("--sent", help="Path to sent-alerts JSON (read+write for nightly, read for weekly)")
         if name == "weekly":
             entry_subparser.add_argument("--output", default="output")
         entry_subparser.set_defaults(fn=handler_fn)

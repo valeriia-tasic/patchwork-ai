@@ -128,18 +128,31 @@ def run(ask: Ask, say: Callable[[str], None] = print) -> dict:
             say("That's the maximum of 6 creams.")
             break
 
-    # 4. Antihistamine
-    uses_antihistamine = _yes(ask("\nDo you give an antihistamine? [y] "), default=True)
-    antihistamine: dict = {"enabled": uses_antihistamine, "brand": "Antihistamine", "limit": {"max_doses": 1, "window_days": 3}, "color": "#6a4fb3"}
-    if uses_antihistamine:
-        antihistamine["brand"] = ask("  Brand name (e.g. Zyrtec, Claritin) [Antihistamine]: ").strip() or "Antihistamine"
-        say("  " + LIMIT_NOTE)
-        max_doses_input = ask("  Alert when it's given more than how many times within a window? (blank = no alert) ").strip()
-        window_days_input = ask("  ...within how many days? ").strip() if max_doses_input.isdigit() else ""
-        antihistamine["limit"] = {
-            "max_doses": int(max_doses_input) if max_doses_input.isdigit() else None,
-            "window_days": int(window_days_input) if window_days_input.isdigit() else None,
-        }
+    # 4. Medications
+    say("\nMedications (antihistamine, montelukast, etc.). " + LIMIT_NOTE)
+    medications: list[dict] = []
+    taken_cream_ids = {cream["id"] for cream in creams}
+    while True:
+        default_name = "" if medications else "Antihistamine"
+        name = ask(f"Medication name{f' [{default_name}]' if default_name else ' (Enter when done)'}: ").strip() or default_name
+        if not name:
+            break
+        taken_med_ids = {med["id"] for med in medications} | taken_cream_ids
+        med_id = _slug(name, taken_med_ids)
+        max_doses_input = ask(f"  Alert when {name} is given more than N times within a window? N = [none] ").strip()
+        window_days_input = ask(f"  ...within how many days? ").strip() if max_doses_input.isdigit() else ""
+        medications.append({
+            "id": med_id,
+            "name": name,
+            "limit": {
+                "max_doses": int(max_doses_input) if max_doses_input.isdigit() else None,
+                "window_days": int(window_days_input) if window_days_input.isdigit() else None,
+            },
+            "color": "#6a4fb3",
+        })
+        if len(medications) >= 4:
+            say("That's the maximum of 4 medications.")
+            break
 
     # 5. Allergen exposure
     track_allergens = _yes(ask("\nDo you want to log allergen exposure (food introductions, accidental contact)? [n] "))
@@ -167,7 +180,7 @@ def run(ask: Ask, say: Callable[[str], None] = print) -> dict:
             "colors": {area: AREA_COLORS[index % len(AREA_COLORS)] for index, area in enumerate(areas)},
         },
         "creams": creams,
-        "antihistamine": antihistamine,
+        "medications": medications,
         "allergens": allergens,
         "trends": {"min_change_per_week": 1.5, "baseline_weeks": 3},
         "averages": {"rolling_weeks": 12},
@@ -201,12 +214,12 @@ def summary(profile: dict) -> str:
             alert_bits.append(f"alert if > {limits['max_days_per_week']} days/week total")
         schedule_label = "morning/night" if cream["schedule"] == "morning_night" else "once a day"
         lines.append(f"Cream: {cream['name']} — {where}, {schedule_label}" + (f", {'; '.join(alert_bits)}" if alert_bits else ""))
-    antihistamine = profile["antihistamine"]
-    if antihistamine["enabled"]:
-        lines.append(
-            f"Antihistamine: {antihistamine['brand']} — alert if more than {antihistamine['limit']['max_doses']} "
-            f"in {antihistamine['limit']['window_days']} days"
-        )
+    for med in profile.get("medications", []):
+        limit = med.get("limit") or {}
+        if limit.get("max_doses"):
+            lines.append(f"Medication: {med['name']} — alert if more than {limit['max_doses']} in {limit.get('window_days')} days")
+        else:
+            lines.append(f"Medication: {med['name']}")
     if profile["allergens"]["track"]:
         lines.append("Allergens: " + ", ".join(profile["allergens"]["list"]))
     return "\n".join(lines)

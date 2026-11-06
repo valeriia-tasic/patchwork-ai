@@ -43,12 +43,14 @@
     }
   ],
 
-  "antihistamine": {
-    "enabled": true,
-    "brand": "Antihistamine",
-    "limit": {"max_doses": null, "window_days": null},
-    "color": "#6a4fb3"
-  },
+  "medications": [
+    {
+      "id": "anti",
+      "name": "Antihistamine",
+      "limit": {"max_doses": null, "window_days": null},
+      "color": "#6a4fb3"
+    }
+  ],
 
   "allergens": {
     "track": true,

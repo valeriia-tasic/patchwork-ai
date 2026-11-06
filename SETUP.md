@@ -40,10 +40,11 @@ Then ask the limit question(s) for that item. If the parent skips (blank answer)
   - If used on more than one area: "How many days in a week on one area before I alert you?" (blank = no alert)
   - "How many days in a week total before I alert you?" (blank = no alert)
 
-**4. Antihistamine**
-- "Do you give an antihistamine? What brand?" (e.g. Zyrtec, Claritin)
-- **Limit** (say the limits preamble, then ask):
-  - "How many times given within how many days before I alert you?" (blank = no alert)
+**4. Medications**
+- "Any medications to track — antihistamine, montelukast, or anything else?" First one defaults to Antihistamine. Up to 4.
+- For each: "What's it called?" then the limits preamble, then:
+  - "Alert when it's given more than N times within a window? N = " and "...within how many days?" (blank = no alert for either)
+- When done: Enter with no name to move on.
 
 **5. Allergen exposure**
 - "Do you want to log allergen exposure — food introductions or accidental contact?"

@@ -15,7 +15,7 @@ from .rules import DEFAULT_PROFILE, PRIVATE_PROFILE, ROOT, unwrap, validate
 
 TEMPLATE = ROOT / "web" / "index.html"
 BLOCK = re.compile(r"(const PROFILE=/\*PROFILE\*/)(.*?)(/\*END_PROFILE\*/;)", re.S)
-PAGE_KEYS = ("areas", "creams", "antihistamine", "allergens", "averages")
+PAGE_KEYS = ("areas", "creams", "medications", "antihistamine", "allergens", "averages")
 
 
 def page_profile(raw: dict) -> dict:

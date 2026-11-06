@@ -11,6 +11,8 @@ from pathlib import Path
 from .rules import (
     Cream,
     DEFAULT_PROFILE,
+    MED_RESERVED_TYPES,
+    Medication,
     PALETTE,
     PRIVATE_PROFILE,
     Profile,
@@ -28,7 +30,10 @@ def profile_from_dict(raw: dict) -> Profile:
     """Build a Profile dataclass from a validated profile dict.
 
     Called by load_profile after validation passes. The dict comes from rules.json
-    or private/profile.json. Parses creams, antihistamine, and allergen sections.
+    or private/profile.json. Parses creams, medications, and allergen sections.
+
+    Migration: profiles with the old 'antihistamine' key are silently converted to
+    a one-item 'medications' list with id 'anti', so existing log entries keep matching.
     """
     areas = raw["areas"]
     creams = []
@@ -44,7 +49,29 @@ def profile_from_dict(raw: dict) -> Profile:
             max_days_per_week=_int_or_none(limits.get("max_days_per_week")),
             color=cream_raw.get("color") or PALETTE[index % len(PALETTE)],
         ))
-    antihistamine = raw.get("antihistamine") or {}
+    # Support both new 'medications' list and old 'antihistamine' format.
+    if "medications" in raw:
+        meds_raw = raw["medications"]
+    elif "antihistamine" in raw:
+        anti = raw["antihistamine"] or {}
+        meds_raw = [{
+            "id": "anti",
+            "name": anti.get("brand") or "Antihistamine",
+            "limit": anti.get("limit") or {},
+            "color": anti.get("color", "#6a4fb3"),
+        }] if anti.get("enabled", True) else []
+    else:
+        meds_raw = []
+    medications = []
+    for med_raw in meds_raw:
+        limit = med_raw.get("limit") or {}
+        medications.append(Medication(
+            id=med_raw["id"],
+            name=med_raw.get("name", med_raw["id"]),
+            max_doses=_int_or_none(limit.get("max_doses")),
+            window_days=_int_or_none(limit.get("window_days")),
+            color=med_raw.get("color", "#6a4fb3"),
+        ))
     allergens_config = raw.get("allergens") or {}
     return Profile(
         areas=tuple(areas["tracked"]),
@@ -53,11 +80,7 @@ def profile_from_dict(raw: dict) -> Profile:
         aliases={alias_key.lower(): alias_target for alias_key, alias_target in areas.get("aliases", {}).items()},
         area_colors=areas.get("colors", {}),
         creams=tuple(creams),
-        antihistamine_enabled=bool(antihistamine.get("enabled", True)),
-        antihistamine_brand=antihistamine.get("brand") or "Antihistamine",
-        antihistamine_max_doses=_int_or_none((antihistamine.get("limit") or {}).get("max_doses")),
-        antihistamine_window_days=_int_or_none((antihistamine.get("limit") or {}).get("window_days")),
-        antihistamine_color=antihistamine.get("color", "#6a4fb3"),
+        medications=tuple(medications),
         track_allergens=bool(allergens_config.get("track", False)),
         allergens=tuple(allergens_config.get("list", [])),
         trend_min_change=float(raw.get("trends", {}).get("min_change_per_week", 1.5)),
@@ -112,6 +135,20 @@ def validate(raw: dict) -> list[str]:
                 errors.append(f"cream '{cream_id}': {limit_key} must be 1–7 or empty")
     if not raw.get("creams"):
         errors.append("add at least one cream")
+    # Validate medications only when the new key is present (old 'antihistamine' is migrated on load).
+    if "medications" in raw:
+        seen_med_ids: set[str] = set()
+        for med in raw["medications"]:
+            med_id = med.get("id", "")
+            if not med_id or not med_id.replace("_", "").isalnum() or med_id != med_id.lower():
+                errors.append(f"medication id '{med_id}' must be lowercase letters, digits or _")
+            if med_id in MED_RESERVED_TYPES:
+                errors.append(f"medication id '{med_id}' is reserved")
+            if med_id in seen_med_ids:
+                errors.append(f"medication id '{med_id}' is used twice")
+            if med_id in seen:
+                errors.append(f"medication id '{med_id}' conflicts with a cream id")
+            seen_med_ids.add(med_id)
     return errors
 
 

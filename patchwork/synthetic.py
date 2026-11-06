@@ -36,7 +36,7 @@ def generate(weeks: int = 12, seed: int = 7, end: date | None = None, profile: P
     sub_areas = [sub for sub in SUB_AREAS if active_profile.categories_for(sub)]
 
     entries: list[dict] = []
-    last_antihistamine_day = start - timedelta(days=4)
+    last_med_day = {med.id: start - timedelta(days=4) for med in active_profile.medications}
     current_date = start
     while current_date <= end:
         is_travel = travel_start <= current_date < travel_start + timedelta(days=4)
@@ -74,18 +74,18 @@ def generate(weeks: int = 12, seed: int = 7, end: date | None = None, profile: P
                 entry["slot"] = rng.choice(["morning", "night", "night"])
             entries.append(entry)
 
-        if active_profile.antihistamine_enabled:
-            days_since_last = (current_date - last_antihistamine_day).days
-            anti_chance = 0.05 if is_calm else 0.7 if is_rough else (0.45 if days_since_last >= 4 else 0.1)
-            if rng.random() < anti_chance:
+        for med in active_profile.medications:
+            days_since_last = (current_date - last_med_day[med.id]).days
+            med_chance = 0.05 if is_calm else 0.7 if is_rough else (0.45 if days_since_last >= 4 else 0.1)
+            if rng.random() < med_chance:
                 entries.append({
-                    "type": "anti",
+                    "type": med.id,
                     "day": current_date.isoformat(),
                     "at": f"{current_date.isoformat()}T19:30:00",
                     "areas": [],
                     "note": "travel" if is_travel else "",
                 })
-                last_antihistamine_day = current_date
+                last_med_day[med.id] = current_date
 
         if active_profile.track_allergens and allergen and current_date >= end - timedelta(days=27) and current_date.weekday() in (1, 4):
             entries.append({

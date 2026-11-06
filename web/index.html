@@ -173,9 +173,9 @@ textarea{min-height:64px;resize:vertical}
 
 <script>
 // Built from a profile by `python -m patchwork page`. Edit the profile, not this line.
-const PROFILE=/*PROFILE*/{"areas":{"tracked":["Arms","Legs","Stomach","Back","Neck","Face","Diaper"],"full_body":{"names":["entire body","full body","body"],"covers":["Arms","Legs","Stomach","Back","Neck"]},"aliases":{"ankle":"Legs","ankles":"Legs","foot":"Legs","feet":"Legs","knee":"Legs","knees":"Legs","thigh":"Legs","thighs":"Legs","shin":"Legs","shins":"Legs","elbow":"Arms","elbows":"Arms","hand":"Arms","hands":"Arms","wrist":"Arms","wrists":"Arms","thumb":"Arms","thumbs":"Arms","finger":"Arms","fingers":"Arms","shoulder":"Arms","shoulders":"Arms","side":"Back"},"colors":{"Arms":"#e6194b","Legs":"#3cb44b","Stomach":"#ffb000","Back":"#4363d8","Neck":"#f032e6","Face":"#00b8d4","Diaper":"#ff6f00"}},"creams":[{"id":"steroid","name":"Steroid","schedule":"daily","areas":"any","limits":{"max_days_per_area_per_week":null,"max_days_per_week":null},"color":"#b26a12"},{"id":"taci","name":"Face cream","schedule":"morning_night","areas":["Face"],"limits":{"max_days_per_area_per_week":null,"max_days_per_week":null},"color":"#2c6e73"}],"antihistamine":{"enabled":true,"brand":"Antihistamine","limit":{"max_doses":null,"window_days":null},"color":"#6a4fb3"},"allergens":{"track":true,"list":["Milk","Egg","Fish","Shellfish","Tree nuts","Peanut","Wheat","Soy","Sesame"]},"averages":{"rolling_weeks":12}}/*END_PROFILE*/;
+const PROFILE=/*PROFILE*/{"areas":{"tracked":["Arms","Legs","Stomach","Back","Neck","Face","Diaper"],"full_body":{"names":["entire body","full body","body"],"covers":["Arms","Legs","Stomach","Back","Neck"]},"aliases":{"ankle":"Legs","ankles":"Legs","foot":"Legs","feet":"Legs","knee":"Legs","knees":"Legs","thigh":"Legs","thighs":"Legs","shin":"Legs","shins":"Legs","elbow":"Arms","elbows":"Arms","hand":"Arms","hands":"Arms","wrist":"Arms","wrists":"Arms","thumb":"Arms","thumbs":"Arms","finger":"Arms","fingers":"Arms","shoulder":"Arms","shoulders":"Arms","side":"Back"},"colors":{"Arms":"#e6194b","Legs":"#3cb44b","Stomach":"#ffb000","Back":"#4363d8","Neck":"#f032e6","Face":"#00b8d4","Diaper":"#ff6f00"}},"creams":[{"id":"steroid","name":"Steroid","schedule":"daily","areas":"any","limits":{"max_days_per_area_per_week":null,"max_days_per_week":null},"color":"#b26a12"},{"id":"taci","name":"Face cream","schedule":"morning_night","areas":["Face"],"limits":{"max_days_per_area_per_week":null,"max_days_per_week":null},"color":"#2c6e73"}],"medications":[{"id":"anti","name":"Antihistamine","limit":{"max_doses":null,"window_days":null},"color":"#6a4fb3"}],"allergens":{"track":true,"list":["Milk","Egg","Fish","Shellfish","Tree nuts","Peanut","Wheat","Soy","Sesame"]},"averages":{"rolling_weeks":12}}/*END_PROFILE*/;
 const safeColor=c=>/^#[0-9a-fA-F]{3,8}$/.test(c||"")?c:"#5d6677";
-let AREAS,FULL,FULL_NAMES,ALIASES,AREA_COLORS,CREAMS,AREA_CREAM,AH,AL,ROLL,TYPES;
+let AREAS,FULL,FULL_NAMES,ALIASES,AREA_COLORS,CREAMS,AREA_CREAM,MEDS,AL,ROLL,TYPES;
 
 // Everything family-specific comes from the profile. The live log keeps it in its own
 // database (config/profile); the embedded PROFILE is the fallback and the demo setup.
@@ -184,7 +184,9 @@ function applyProfile(P){
   ALIASES=P.areas.aliases||{};AREA_COLORS={};Object.entries(P.areas.colors||{}).forEach(([k,v])=>AREA_COLORS[k]=safeColor(v));
   CREAMS=P.creams.map(c=>Object.assign({},c,{color:safeColor(c.color),allowed:c.areas==="any"?AREAS:c.areas,multi:c.areas==="any"||c.areas.length>1}));
   AREA_CREAM=CREAMS.find(c=>c.multi)||null;
-  AH=P.antihistamine||{enabled:false};AL=P.allergens||{track:false,list:[]};
+  // Support both new 'medications' array and old 'antihistamine' object for existing profiles.
+  MEDS=P.medications||(P.antihistamine&&P.antihistamine.enabled?[{id:"anti",name:P.antihistamine.brand,color:P.antihistamine.color||"#6a4fb3"}]:[]);
+  AL=P.allergens||{track:false,list:[]};
   ROLL=(P.averages||{}).rolling_weeks||12;
   // Entry types and how each is logged
   TYPES={};
@@ -192,7 +194,7 @@ function applyProfile(P){
     areaList:c.areas==="any"?AREAS.concat(["Entire body","Other"]):c.allowed,
     preset:c.allowed.length===1?[c.allowed[0]]:[],needArea:true,dateOnly:true,slots:c.schedule==="morning_night",
     hint:c.allowed.length===1?"on "+c.allowed[0].toLowerCase():c.areas==="any"?"on a patch":"on "+c.allowed.join(", ").toLowerCase()}});
-  if(AH.enabled)TYPES.anti={kind:"anti",name:AH.brand,color:safeColor(AH.color||"#6a4fb3"),hint:"dose given"};
+  MEDS.forEach(med=>TYPES[med.id]={kind:"med",name:med.name,color:safeColor(med.color||"#6a4fb3"),hint:"dose given"});
   TYPES.flare={kind:"flare",name:"Flare",color:"#c2413b",areas:true,areaList:AREAS.concat(["Entire body","Other"]),needArea:true,hint:"new or worse patch"};
   if(AL.track)TYPES.allergen={kind:"allergen",name:"Allergen",color:"#8a6d1f",hint:"exposure"};
   TYPES.note={kind:"note",name:"Note",color:"#5d6677",hint:"food, soap, sleep…",wide:true};
@@ -281,8 +283,8 @@ function drawChart(){
   const series=[];
   CREAMS.forEach(c=>{const by=weeks.map(()=>[]);entries.forEach(e=>{if(e.type===c.id&&e.day){const i=idx[weekKey(e.day)];if(i!==undefined)by[i].push(e)}});
     series.push({name:c.name+(c.multi?" (avg per area)":""),color:c.color,vals:c.multi?by.map(ev=>avgPerTreatedArea(ev,c)):by.map(ev=>new Set(ev.map(e=>e.day)).size)})});
-  if(AH.enabled){const by=weeks.map(()=>new Set());entries.forEach(e=>{if(e.type==="anti"&&e.day){const i=idx[weekKey(e.day)];if(i!==undefined)by[i].add(e.day)}});
-    series.push({name:AH.brand+" days",color:safeColor(AH.color||"#6a4fb3"),vals:by.map(s=>s.size)})}
+  MEDS.forEach(med=>{const by=weeks.map(()=>new Set());entries.forEach(e=>{if(e.type===med.id&&e.day){const i=idx[weekKey(e.day)];if(i!==undefined)by[i].add(e.day)}});
+    series.push({name:med.name+" days",color:safeColor(med.color||"#6a4fb3"),vals:by.map(s=>s.size)})})
   const x=i=>L+i*(W-L-R)/(N-1), y=v=>T+(H-T-B)*(1-v/7);
   let s="";[0,2,4,6].forEach(v=>{s+='<line class="grid" x1="'+L+'" x2="'+(W-R)+'" y1="'+y(v)+'" y2="'+y(v)+'"/><text class="ax" x="'+(L-6)+'" y="'+(y(v)+4)+'" text-anchor="end">'+v+'</text>'});
   weeks.forEach((w,i)=>{if(i%3===0||i===N-1)s+='<text class="ax" x="'+x(i)+'" y="'+(H-6)+'" text-anchor="'+(i===N-1?"end":i===0?"start":"middle")+'">'+w.toLocaleDateString(undefined,{month:"short",day:"numeric"})+'</text>'});
@@ -333,7 +335,7 @@ function render(){
   const t0=now();const ym=t0.getFullYear()+"-"+pad(t0.getMonth()+1);
   const days=t=>new Set(entries.filter(e=>e.type===t&&(e.day||"").startsWith(ym)).map(e=>e.day)).size;
   const st=$("stats");st.innerHTML="";
-  CREAMS.map(c=>[c.id,c.name,c.color]).concat(AH.enabled?[["anti",AH.brand,safeColor(AH.color||"#6a4fb3")]]:[]).forEach(([id,name,color])=>{
+  CREAMS.map(c=>[c.id,c.name,c.color]).concat(MEDS.map(med=>[med.id,med.name,safeColor(med.color||"#6a4fb3")])).forEach(([id,name,color])=>{
     const d=document.createElement("div");d.className="stat tinted";d.style.setProperty("--c",color);
     const b=document.createElement("b");b.textContent=days(id);const sp=document.createElement("span");sp.textContent=name;d.append(b,sp);st.appendChild(d)});
   const L=$("lastLine");L.textContent="";

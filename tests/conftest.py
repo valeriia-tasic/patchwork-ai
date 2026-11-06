@@ -16,7 +16,7 @@ def profile():
     Limits are defined here for test purposes — Patchwork does not recommend any limits."""
     raw = json.loads((Path(__file__).parent.parent / "rules.json").read_text())
     raw["creams"][0]["limits"]["max_days_per_area_per_week"] = 2
-    raw["antihistamine"]["limit"] = {"max_doses": 1, "window_days": 3}
+    raw["medications"][0]["limit"] = {"max_doses": 1, "window_days": 3}
     return profile_from_dict(raw)
 
 

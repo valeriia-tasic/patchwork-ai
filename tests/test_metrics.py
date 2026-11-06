@@ -57,9 +57,9 @@ def test_area_over_limit_needs_more_than_the_limit(profile):
     assert [(a, n) for a, n, _ in m.areas_over_limit(three, profile, steroid, WEEK)] == [("Arms", 3)]
 
 
-def test_antihistamine_gap_includes_dose_before_the_week():
+def test_medication_gap_includes_dose_before_the_week():
     log = [e("anti", "2026-03-06"), e("anti", "2026-03-09"), e("anti", "2026-03-11")]
-    assert m.antihistamine_gap(log, WEEK) == 2.5
+    assert m.medication_gap(log, "anti", WEEK) == 2.5
     assert m.describe_gap(2.5, 2) == "every 2.5 days"
 
 

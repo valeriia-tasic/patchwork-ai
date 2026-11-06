@@ -32,8 +32,7 @@ class ReportNumbers(TypedDict, total=False):
 
     window: list[str]           # [start_iso, end_iso]
     creams: dict[str, CreamNumbers]
-    antihistamine_days: int
-    antihistamine_gap_days: float | None
+    medications: dict[str, dict]  # med_id → {days, gap_days}
     allergen_exposures: int
     rolling_area_average: dict[str, float]
 
@@ -63,6 +62,7 @@ class WeeklyReport:
     trends: list[str] = field(default_factory=list)   # [summary, rising, falling]
     footer: str = ""
     numbers: ReportNumbers = field(default_factory=dict)  # type: ignore[arg-type]
+    notifications: list[str] | None = None  # set when --sent is passed; None omits the section
 
 
 def _format_date(day: date) -> str:
@@ -80,7 +80,7 @@ def _join_and(items: list[str]) -> str:
     return items[0] if len(items) == 1 else ", ".join(items[:-1]) + " and " + items[-1]
 
 
-def build_weekly(entries: list[Entry], profile: Profile, today: date) -> WeeklyReport:
+def build_weekly(entries: list[Entry], profile: Profile, today: date, sent: list[dict] | None = None) -> WeeklyReport:
     """Compute all metrics for the current week and assemble a WeeklyReport.
 
     Covers every cream (total days, slot split, per-area counts, limits), the
@@ -134,16 +134,19 @@ def build_weekly(entries: list[Entry], profile: Profile, today: date) -> WeeklyR
         sections.append(Section(cream.name.upper() + area_label.upper(), lines))
         numbers["creams"][cream.id] = cream_numbers
 
-    # Antihistamine
-    if profile.antihistamine_enabled:
-        antihistamine_this_week = len(m.days_of(entries, "anti", this_week))
-        antihistamine_last_week = len(m.days_of(entries, "anti", last_week))
-        gap = m.antihistamine_gap(entries, this_week)
-        sections.append(Section(profile.antihistamine_brand.upper(), [
-            f"Total: {_format_days(antihistamine_this_week)} this week (last week {antihistamine_last_week})",
-            f"Average gap: {m.describe_gap(gap, antihistamine_this_week)}",
+    # Medications — one section per medication
+    meds_numbers: dict[str, dict] = {}
+    for med in profile.medications:
+        days_this_week = len(m.days_of(entries, med.id, this_week))
+        days_last_week = len(m.days_of(entries, med.id, last_week))
+        gap = m.medication_gap(entries, med.id, this_week)
+        sections.append(Section(med.name.upper(), [
+            f"Total: {_format_days(days_this_week)} this week (last week {days_last_week})",
+            f"Average gap: {m.describe_gap(gap, days_this_week)}",
         ]))
-        numbers.update(antihistamine_days=antihistamine_this_week, antihistamine_gap_days=gap)
+        meds_numbers[med.id] = {"days": days_this_week, "gap_days": gap}
+    if meds_numbers:
+        numbers["medications"] = meds_numbers
 
     # Flares and notes
     flares = [entry for entry in entries if entry.type == "flare" and entry.day in this_week]
@@ -204,6 +207,19 @@ def build_weekly(entries: list[Entry], profile: Profile, today: date) -> WeeklyR
         ]
         numbers["rolling_area_average"] = rolling_avg
 
+    # Notifications sent this week (only when sent history is provided)
+    notifications: list[str] | None = None
+    if sent is not None:
+        fired_this_week = []
+        for item in sent:
+            try:
+                sent_date = date.fromisoformat(item["date"])
+            except (KeyError, ValueError):
+                continue
+            if sent_date in this_week:
+                fired_this_week.append(f"{_format_date(sent_date)}: {item.get('headline', item.get('key', ''))}")
+        notifications = fired_this_week if fired_this_week else ["None sent this week."]
+
     log_url = profile.delivery.get("log_url", "")
     return WeeklyReport(
         subject=f"Skin report — week of {_format_date(this_week.start)}",
@@ -212,6 +228,7 @@ def build_weekly(entries: list[Entry], profile: Profile, today: date) -> WeeklyR
         trends=trends,
         footer=f"Live log: {log_url}" if log_url else "",
         numbers=numbers,
+        notifications=notifications,
     )
 
 
@@ -233,6 +250,8 @@ def render_text(weekly_report: WeeklyReport) -> str:
             + "\n".join(f"- {trend}" for trend in weekly_report.trends[1:])
         )
         parts.append("[Chart: by body area]")
+    if weekly_report.notifications is not None:
+        parts.append("NOTIFICATIONS SENT\n" + "\n".join(f"- {line}" for line in weekly_report.notifications))
     if weekly_report.footer:
         parts.append(weekly_report.footer)
     return "\n\n".join(parts) + "\n"
@@ -263,6 +282,9 @@ def render_html(weekly_report: WeeklyReport) -> str:
         out.append(f'<p style="margin:0 0 4px">{escape(weekly_report.trends[0])}</p>')
         out.append(list_template.format("".join(f"<li>{escape(trend)}</li>" for trend in weekly_report.trends[1:])))
         out.append(image_template.format(CHART_2, "Body area chart"))
+    if weekly_report.notifications is not None:
+        out.append(heading_template.format("NOTIFICATIONS SENT"))
+        out.append(list_template.format("".join(f"<li>{escape(line)}</li>" for line in weekly_report.notifications)))
     if weekly_report.footer:
         out.append(f'<p style="color:#888;font-size:12px;margin-top:20px">{escape(weekly_report.footer)}</p>')
     out.append("</div>")

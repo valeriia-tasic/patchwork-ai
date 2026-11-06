@@ -1,4 +1,4 @@
-"""Data model: Cream, Profile, and the constants they depend on.
+"""Data model: Cream, Medication, Profile, and the constants they depend on.
 
 `rules.json` in the repo root is the default profile and schema reference.
 `private/profile.json`, written by the first-use questionnaire, replaces it when present.
@@ -17,10 +17,24 @@ ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_PROFILE = ROOT / "rules.json"
 PRIVATE_PROFILE = ROOT / "private" / "profile.json"
 
-# Entry types that are not creams. A cream id may not reuse one of these.
+# Entry types that cream ids may not reuse. 'anti' is kept here because existing
+# logs use it as a medication entry type and a cream id of 'anti' would collide.
 RESERVED_TYPES = frozenset({"anti", "flare", "allergen", "note"})
+# Medication ids may not reuse these (they don't include 'anti', which is a valid med id).
+MED_RESERVED_TYPES = frozenset({"flare", "allergen", "note"})
 SCHEDULES = ("daily", "morning_night")
 PALETTE = ["#b26a12", "#2c6e73", "#8a5a9e", "#3d7a3a", "#a83c62", "#5a6b8c"]
+
+
+@dataclass(frozen=True)
+class Medication:
+    """A tracked medication (antihistamine, montelukast, etc.)."""
+
+    id: str
+    name: str
+    max_doses: int | None = None
+    window_days: int | None = None
+    color: str = "#6a4fb3"
 
 
 @dataclass(frozen=True)
@@ -55,11 +69,7 @@ class Profile:
     aliases: dict[str, str]
     area_colors: dict[str, str]
     creams: tuple[Cream, ...]
-    antihistamine_enabled: bool
-    antihistamine_brand: str
-    antihistamine_max_doses: int | None
-    antihistamine_window_days: int | None
-    antihistamine_color: str
+    medications: tuple[Medication, ...]
     track_allergens: bool
     allergens: tuple[str, ...]
     trend_min_change: float
@@ -93,6 +103,11 @@ class Profile:
         for area in areas:
             result |= self.categories_for(area)
         return result
+
+    # --- medications -------------------------------------------------------
+    def medication(self, med_id: str) -> Medication | None:
+        """Return the Medication with the given id, or None if not in the profile."""
+        return next((med for med in self.medications if med.id == med_id), None)
 
     # --- creams ------------------------------------------------------------
     def cream(self, cream_id: str) -> Cream | None:
