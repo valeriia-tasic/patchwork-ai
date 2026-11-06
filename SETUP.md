@@ -25,7 +25,7 @@ Then ask the limit question(s) for that item. If the parent skips (blank answer)
 - "Which body areas do you track?" Default: Arms, Legs, Stomach, Back, Neck, Face, Diaper.
 - Follow-ups to get the scope right:
   - "Do you need left and right separately?" If yes, list each side as its own area ("Left arm", "Right arm").
-  - "Smaller spots like elbows or ankles are automatically grouped under their broader area — so 'elbows' counts under Arms. Do you want to track any of them separately as their own area instead?" Record spots that stay grouped as aliases (`"elbows": "Arms"`); spots the parent wants separate become their own area.
+  - "Smaller spots like elbows, knees, ankles are automatically grouped under Arms or Legs. Do you want any of them tracked separately as their own area?" Reflect back the final list simply, e.g. "So: Arms, Legs, Hands." Spots the parent wants separate become their own tracked area; for the rest, record aliases that group each sub-spot under its closest tracked parent (e.g. if Hands is tracked, fingers/thumbs/wrists go under Hands; if only Arms is tracked, they go under Arms).
   - If an area seems very broad (e.g. "Body") or very narrow (e.g. "Left thumb"), ask whether that's the level they want to count at.
 
 **2. Full body**

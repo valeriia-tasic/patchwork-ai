@@ -22,15 +22,6 @@ Ask = Callable[[str], str]
 COMMON_ALLERGENS = ["Milk", "Egg", "Fish", "Shellfish", "Tree nuts", "Peanut", "Wheat", "Soy", "Sesame"]
 DEFAULT_AREAS = ["Arms", "Legs", "Stomach", "Back", "Neck", "Face", "Diaper"]
 DEFAULT_SEPARATE = {"face", "diaper", "scalp"}
-DEFAULT_ALIASES: dict[str, str] = {
-    "ankle": "Legs", "ankles": "Legs", "foot": "Legs", "feet": "Legs",
-    "knee": "Legs", "knees": "Legs", "thigh": "Legs", "thighs": "Legs",
-    "shin": "Legs", "shins": "Legs",
-    "elbow": "Arms", "elbows": "Arms", "hand": "Arms", "hands": "Arms",
-    "wrist": "Arms", "wrists": "Arms", "thumb": "Arms", "thumbs": "Arms",
-    "finger": "Arms", "fingers": "Arms", "shoulder": "Arms", "shoulders": "Arms",
-    "side": "Back",
-}
 AREA_COLORS = ["#e6194b", "#3cb44b", "#ffb000", "#4363d8", "#f032e6", "#00b8d4", "#ff6f00",
                "#911eb4", "#469990", "#9a6324"]
 
@@ -89,7 +80,7 @@ def run(ask: Ask, say: Callable[[str], None] = print) -> dict:
     areas = _split(ask(f"Which body areas do you track? [{', '.join(DEFAULT_AREAS)}] ")) or DEFAULT_AREAS
     say("Some spots belong under a main area, e.g. elbows -> Arms, ankles -> Legs.")
     area_set = {area.lower() for area in areas}
-    aliases: dict[str, str] = {alias_key: alias_target for alias_key, alias_target in DEFAULT_ALIASES.items() if alias_target.lower() in area_set}
+    aliases: dict[str, str] = {}
     for pair in _split(ask("Anything else you log that belongs under one of these? (e.g. elbows=Arms, ankles=Legs) [skip] ")):
         if "=" in pair:
             alias_from, alias_to = (part.strip() for part in pair.split("=", 1))
